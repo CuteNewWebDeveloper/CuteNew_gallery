@@ -17,7 +17,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.11'  # 可按需修改
+        python-version: '3.11'
 
     - name: Install dependencies
       run: |
@@ -28,9 +28,12 @@ jobs:
       run: python auto_update.py
 
     - name: Commit and push changes
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
+        git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}
         git add -A
         git diff --cached --quiet || git commit -m "Auto update gallery from input_material"
         git push
