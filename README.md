@@ -7,6 +7,6 @@
 ②-② 复制到CuteNew_gallery/docs/images/；  
 ②-③ 复制到CuteNew_gallery/docs/images_preview/并转换为缩略图；  
 ②-④ 依据html模板生成图片展示页，并保存到CuteNew_gallery/docs/pages/；  
-②-⑤ 按顺序，依据html模板更新gallery首页；
+②-⑤ 按顺序，依据html模板更新gallery首页；  
 ②-⑥ 删除CuteNew_gallery/docs/input_material/中所有文件；  
 ③ github workflow推送所更改文件到仓库。  
