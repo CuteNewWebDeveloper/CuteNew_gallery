@@ -46,6 +46,36 @@
       font-size: 0.9em;
       color: #333;
     }
+    .caption.tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px;
+}
+
+.tag {
+  display: inline-block;
+  padding: 4px 12px;
+  font-size: 0.8em;
+  font-weight: 500;
+  border-radius: 999px;
+  color: white;
+  background-color: #888;
+  transition: background-color 0.3s ease;
+}
+
+/* 循环色系 */
+.tag1 { background-color: #007bff; }  /* 蓝 */
+.tag2 { background-color: #28a745; }  /* 绿 */
+.tag3 { background-color: #ffc107; color: black; }  /* 黄 */
+.tag4 { background-color: #dc3545; }  /* 红 */
+
+/* 深色模式微调（可选） */
+@media (prefers-color-scheme: dark) {
+  .tag3 { background-color: #ffca2c; color: black; }
+}
+
   </style>
 </head>
 <body>
@@ -67,7 +97,13 @@
     
 <a href="/CuteNew_gallery/pages/Page_1040397.html" class="gallery-item">
   <img src="https://raw.githubusercontent.com/CuteNewWebDeveloper/CuteNew_gallery/refs/heads/main/images/_1040397.JPG" alt="图片1">
-  <div class="caption">星空联盟彩绘</div>
+  <div class="caption tags">
+  <span class="tag tag1">波音737</span>
+  <span class="tag tag2">星空联盟彩绘</span>
+  <span class="tag tag3">PEK/ZBAA</span>
+  <span class="tag tag4">2021</span>
+</div>
+
 </a>
 <a href="/CuteNew_gallery/pages/Page_1040397.html" class="gallery-item">
   <img src="https://raw.githubusercontent.com/CuteNewWebDeveloper/CuteNew_gallery/refs/heads/main/images/_1040397.JPG" alt="图片1">
