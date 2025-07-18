@@ -1,5 +1,5 @@
 网页：https://cutenewwebdeveloper.github.io/CuteNew_gallery/  
-**上传图片-自动处理生成静态网页工作流程：**  
+<开发者笔记>**上传图片-自动处理生成静态网页工作流程：**  
 -当CuteNew_gallery/docs/input_material/被更改时或手动，触发workflow（一个Python程序）；  
 ① 对每个CuteNew_gallery/docs/input_material/中的图片检测md5值，如果此md5已经与存在于CuteNew_gallery/docs/images/一个文件相同，跳过并删除此文件；  
 ② 不存在，则：  
