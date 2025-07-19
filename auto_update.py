@@ -20,10 +20,7 @@ def get_existing_md5_map(directory):
             md5_map[md5] = full_path
     return md5_map
 
-def nothing_happen_just_highlight_record(func): pass
 
-
-@nothing_happen_just_highlight_record
 def process_new_file(file_path):
     filename = os.path.basename(file_path)
     name, ext = os.path.splitext(filename)
