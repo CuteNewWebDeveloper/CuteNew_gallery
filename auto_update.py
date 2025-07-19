@@ -1,3 +1,4 @@
+import math
 import os
 import hashlib
 import csv
@@ -9,6 +10,7 @@ import uuid
 from datetime import datetime
 from PIL import Image
 import shutil
+import math
 
 
 input_dir = "./docs/input_material"
@@ -108,7 +110,7 @@ def process_new_file(file_path):
         resized_img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
         resized_img.save(preview_path, 'JPEG')
         print(f"[Success] Resized and copied {filename} to {preview_path} (width: {new_width}px)")
-    
+
     html_template = """<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -196,8 +198,46 @@ def process_new_file(file_path):
     print(f"[Success] {filename} finish and is being removed.")
     os.remove(file_path)
     return
-    
+
     # TODO:  后续逻辑可以继续写在这里
+
+
+
+def count_image_log_rows():
+    try:
+        with open('./docs/images/image_log.csv', 'r', newline='') as file:
+            reader = csv.reader(file)
+            # 跳过表头
+            next(reader, None)
+            # 计数非表头行
+            row_count = sum(1 for row in reader)
+            return row_count
+    except FileNotFoundError:
+        print("文件 './docs/images/image_log.csv' 未找到")
+        return 0
+    except Exception as e:
+        print(f"发生错误: {str(e)}")
+        return 0
+
+def get_nth_row_content(n):
+    try:
+        with open('./docs/images/image_log.csv', 'r', newline='') as file:
+            reader = csv.reader(file)
+            # 跳过表头
+            next(reader, None)
+            # 遍历到第 n 行
+            for i, row in enumerate(reader, 1):
+                if i == n:
+                    return row
+            print(f"未找到第 {n} 行，文件行数不足")
+            return None
+    except FileNotFoundError:
+        print("文件 './docs/images/image_log.csv' 未找到")
+        return None
+    except Exception as e:
+        print(f"发生错误: {str(e)}")
+        return None
+
 
 
 def main():
@@ -219,6 +259,251 @@ def main():
             os.remove(input_path)
         else:
             process_new_file(input_path)
+    # 完成并生index.html
+    image_count = count_image_log_rows()
+    pages_num = math.ceil(image_count /28)
+    for this_page_num in range(pages_num):
+        html_template = """<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CuteNew Gallery</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background-color: #f5f5f5;
+    }
+    header {
+      background-color: #122344;
+      color: white;
+      text-align: center;
+      padding: 1em;
+      font-size: 1.5em;
+    }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 16px;
+      padding: 16px;
+    }
+    .gallery-item {
+      background-color: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease;
+    }
+    .gallery-item:hover {
+      transform: scale(1.03);
+    }
+    .gallery-item img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .caption {
+      padding: 8px;
+      text-align: center;
+      font-size: 0.9em;
+      color: #333;
+    }
+    .caption.tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px;
+}
+
+.tag {
+  display: inline-block;
+  padding: 4px 12px;
+  font-size: 0.8em;
+  font-weight: 500;
+  border-radius: 999px;
+  color: white;
+  background-color: #888;
+  transition: background-color 0.3s ease;
+}
+
+/* 循环色系 */
+.tag1 { background-color: #007bff; }  /* 蓝 */
+.tag2 { background-color: #28a745; }  /* 绿 */
+.tag3 { background-color: #ffc107; color: black; }  /* 黄 */
+.tag4 { background-color: #dc3545; }  /* 红 */
+
+/* 深色模式微调（可选） */
+@media (prefers-color-scheme: dark) {
+  .tag3 { background-color: #ffca2c; color: black; }
+}
+
+  .pagination a {
+    margin: 0 6px;
+    text-decoration: none;
+    color: #0077cc;
+    font-weight: bold;
+  }
+  .pagination a:hover {
+    text-decoration: underline;
+  }
+
+
+      .goto-container {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .goto-container input[type="number"] {
+    width: 60px;
+    padding: 4px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    text-align: center;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .goto-container input[type="number"]:focus {
+    border-color: #0077cc;
+  }
+
+  .goto-container button {
+    background-color: #0077cc;
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    font-size: 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    transition: background-color 0.3s, transform 0.1s;
+  }
+
+  .goto-container button:hover {
+    background-color: #005fa3;
+  }
+
+  .goto-container button:active {
+    transform: scale(0.97);
+  }
+
+  </style>
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="CuteNew Logo" style="height: 1.2em; vertical-align: middle;">  欢迎来到
+CuteNew
+    Gallery
+  </header>
+  <main class="gallery">
+
+
+
+
+
+
+
+
+
+
+
+***replace_me***
+
+
+      </main>
+
+
+
+
+
+<div class="pagination" style="text-align: center; margin: 40px 0;">
+  <script>
+    const currentPage = 5; // 当前页码
+    const totalPages = 20; // 总页数
+    const range = 2; // 当前页前后展示的页数范围
+    let html = '';
+
+    // 首页 + 上一页
+    if (currentPage > 1) {
+      html += `<a href="${currentPage === 2 ? 'index.html' : 'page' + (currentPage - 1) + '.html'}">« 上一页</a> `;
+      html += `<a href="index.html">首页</a> `;
+    }
+
+    // 前置页码
+    for (let i = Math.max(1, currentPage - range); i < currentPage; i++) {
+      html += `<a href="${i === 1 ? 'index.html' : 'page' + i + '.html'}">${i}</a> `;
+    }
+
+    // 当前页高亮
+    html += `<span style="margin: 0 8px; font-weight: bold; color: gray;">${currentPage}</span>`;
+
+    // 后置页码
+    for (let i = currentPage + 1; i <= Math.min(totalPages, currentPage + range); i++) {
+      html += `<a href="page${i}.html">${i}</a> `;
+    }
+
+    // 下一页 + 尾页
+    if (currentPage < totalPages) {
+      html += `<a href="page${currentPage + 1}.html">下一页 »</a> `;
+      html += `<a href="page${totalPages}.html">尾页</a>`;
+    }
+
+    // 跳转输入框
+    html += `
+      <br/><br/>
+      <div class="goto-container">
+        <label for="gotoPage">跳转到第</label>
+        <input id="gotoPage" type="number" min="1" max="${totalPages}" value="${currentPage}">
+        <span>页</span>
+        <button onclick="gotoPage()">跳转</button>
+      </div>
+    `;
+
+    // 写入到页面中
+    document.write(html);
+
+    // 跳转函数
+    function gotoPage() {
+      const page = parseInt(document.getElementById('gotoPage').value);
+      if (isNaN(page) || page < 1 || page > totalPages) {
+        alert('请输入有效的页码！');
+        return;
+      }
+      location.href = page === 1 ? 'index.html' : `page${page}.html`;
+    }
+  </script>
+</div>
+
+
+  
+
+  
+</body>
+</html>
+"""
+        for index in range(28):
+            nth_row_content = get_nth_row_content(this_page_num * 28 + index + 1)
+            html_template = html_template.replace(f"***replace_me***", f'''<a href="pages/Page_1040397.html" class="gallery-item">
+  <img src="https://raw.githubusercontent.com/CuteNewWebDeveloper/CuteNew_gallery/refs/heads/main/docs/images_preview/{nth_row_content[1]}" alt="图片{nth_row_content[0]}">
+  <div class="caption tags">
+  <span class="tag tag1">{nth_row_content[2]}</span>
+  <span class="tag tag2">{nth_row_content[3]}</span>
+  <span class="tag tag3">{nth_row_content[4]}</span>
+</div>
+
+</a>
+
+***replace_me***''')
+        with open('./docs/index.html' if this_page_num == 0 else f'./docs/page{this_page_num + 1}.html', 'w', encoding='utf-8') as f:
+            f.write(html_template)
+
 
 if __name__ == "__main__":
     main()
