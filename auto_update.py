@@ -92,43 +92,46 @@ def add_text_bar_to_image(image_path, ):
         name = "unknown"  # Fallback if third segment doesn't exist
 
     # Open the image
-    img = Image.open(image_path)
-    width, height = img.size
+    if os.path.isfile(image_path):
+        img = Image.open(image_path)
+        width, height = img.size
 
-    # Create a new image with extra height for the black bar
-    new_height = height + 17
-    new_img = Image.new('RGB', (width, new_height), (0, 0, 0))  # Black background
-    new_img.paste(img, (0, 0))  # Paste original image at the top
+        # Create a new image with extra height for the black bar
+        new_height = height + 17
+        new_img = Image.new('RGB', (width, new_height), (0, 0, 0))  # Black background
+        new_img.paste(img, (0, 0))  # Paste original image at the top
 
-    # Create a draw object
-    draw = ImageDraw.Draw(new_img)
+        # Create a draw object
+        draw = ImageDraw.Draw(new_img)
 
-    # Load a font (use default if arial.ttf is not available)
-    try:
-        font = ImageFont.truetype("arial.ttf", 12)
-    except IOError:
-        font = ImageFont.load_default()
+        # Load a font (use default if arial.ttf is not available)
+        try:
+            font = ImageFont.truetype("arial.ttf", 12)
+        except IOError:
+            font = ImageFont.load_default()
 
-    # Calculate text positions
-    text_y = height + 2  # Slight padding from top of black bar
+        # Calculate text positions
+        text_y = height + 2  # Slight padding from top of black bar
 
-    # Draw left-aligned text
-    draw.text((10, text_y), f' © {year} {name}, All Rights Reserved.', fill=(255, 255, 255), font=font)
+        # Draw left-aligned text
+        draw.text((10, text_y), f' © {year} {name}, All Rights Reserved.', fill=(255, 255, 255), font=font)
 
-    # Draw right-aligned text
-    right_text = 'CuteNew Gallery Images'
-    right_text_bbox = draw.textbbox((0, 0), right_text, font=font)
-    right_text_width = right_text_bbox[2] - right_text_bbox[0]
-    draw.text((width - right_text_width - 10, text_y), right_text, fill=(255, 255, 255), font=font)
+        # Draw right-aligned text
+        right_text = 'CuteNew Gallery Images'
+        right_text_bbox = draw.textbbox((0, 0), right_text, font=font)
+        right_text_width = right_text_bbox[2] - right_text_bbox[0]
+        draw.text((width - right_text_width - 10, text_y), right_text, fill=(255, 255, 255), font=font)
 
-    # Save the new image
-    output_path = os.path.join(os.path.dirname(image_path), f"{filename}")
-    new_img.save(output_path)
+        # Save the new image
+        output_path = os.path.join(os.path.dirname(image_path), f"{filename}")
+        new_img.save(output_path)
 
-    return name, output_path
+        return name, output_path
 
 def crop_bottom_bar(image_path):
     # Open the image
+    if not os.path.isfile(image_path):
+        return 
     img = Image.open(image_path)
     width, height = img.size
 
