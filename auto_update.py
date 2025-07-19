@@ -12,9 +12,9 @@ from PIL import Image
 import shutil
 import math
 
-
 input_dir = "./docs/input_material"
 existing_dir = "./docs/images"
+
 
 def compute_md5(file_path):
     hasher = hashlib.md5()
@@ -22,6 +22,7 @@ def compute_md5(file_path):
         for chunk in iter(lambda: f.read(4096), b""):
             hasher.update(chunk)
     return hasher.hexdigest()
+
 
 def get_existing_md5_map(directory):
     md5_map = {}
@@ -33,51 +34,48 @@ def get_existing_md5_map(directory):
     return md5_map
 
 
-def resize_images(gallery_path):
-    # Ensure the directory exists
-    if not os.path.isdir(gallery_path):
-        print(f"Directory {gallery_path} does not exist or is not a directory.")
+def resize_image(image_path):
+    # Ensure the file exists
+    if not os.path.isfile(image_path):
+        print(f"File {image_path} does not exist.")
         return
 
-    # Iterate through all files in the directory
-    for filename in os.listdir(gallery_path):
-        # Check if the file is an image
-        if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp', '.tiff')):
-            file_path = os.path.join(gallery_path, filename)
+    try:
+        # Open the image
+        with Image.open(image_path) as img:
+            # Get image dimensions
+            width, height = img.size
+            max_dimension = max(width, height)
 
-            try:
-                # Open the image
-                with Image.open(file_path) as img:
-                    # Get image dimensions
-                    width, height = img.size
-                    max_dimension = max(width, height)
+            # Check if resizing is needed
+            if max_dimension > 1920:
+                # Calculate the scaling factor
+                scale = 1920 / max_dimension
+                new_width = int(width * scale)
+                new_height = int(height * scale)
 
-                    # Check if resizing is needed
-                    if max_dimension > 1920:
-                        # Calculate the scaling factor
-                        scale = 1920 / max_dimension
-                        new_width = int(width * scale)
-                        new_height = int(height * scale)
+                # Resize the image
+                resized_img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
 
-                        # Resize the image
-                        resized_img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
+                # Convert to RGB if necessary (for PNG or other formats with transparency)
+                if resized_img.mode in ('RGBA', 'P'):
+                    resized_img = resized_img.convert('RGB')
 
-                        # Convert to RGB if necessary (for PNG or other formats with transparency)
-                        if resized_img.mode in ('RGBA', 'P'):
-                            resized_img = resized_img.convert('RGB')
+                # Define output path in the same directory
+                output_filename = f"resized_{os.path.basename(image_path)}"
+                if image_path.lower().endswith(('.png', '.bmp', '.tiff')):
+                    output_filename = output_filename.rsplit('.', 1)[0] + '.jpg'
+                output_path = os.path.join(os.path.dirname(image_path), output_filename)
 
-                        # Define output path, replacing original extension with .jpg if needed
-                        output_filename = f"resized_{os.path.splitext(filename)[0]}.jpg"
-                        output_path = os.path.join(gallery_path, output_filename)
+                # Save the resized image with quality 95
+                resized_img.save(output_path, 'JPEG', quality=95)
+                print(f"Resized and saved: {output_path}")
+            else:
+                print(f"No resizing needed for: {image_path}")
 
-                        # Save the resized image with quality 95
-                        resized_img.save(output_path, 'JPEG', quality=95)
-                        print(f"Resized and saved: {output_path}")
-                    else:
-                        print(f"No resizing needed for: {filename}")
+    except Exception as e:
+        print(f"Error processing {image_path}: {str(e)}")
 
-            except Exception as e:
-                print(f"Error processing {filename}: {str(e)}")
 
 def process_new_file(file_path):
     filename = os.path.basename(file_path)
@@ -146,8 +144,6 @@ def process_new_file(file_path):
     # Copy original image to gallery
     shutil.copy(file_path, gallery_path)
     print(f"[Success] Copied {filename} to {gallery_path}")
-    resize_images(gallery_path)
-
 
     # Resize and copy image to preview
     with Image.open(file_path) as img:
@@ -235,20 +231,20 @@ def process_new_file(file_path):
 </body>
 </html>
 """
-    html_template = html_template.replace('Replace_me_as_real_jpg_file_name',file_random_name)
-    html_template = html_template.replace("Replace_me_as_time",part1)
+    html_template = html_template.replace('Replace_me_as_real_jpg_file_name', file_random_name)
+    html_template = html_template.replace("Replace_me_as_time", part1)
     html_template = html_template.replace("Replace_me_as_location", part2)
     html_template = html_template.replace("Replace_me_as_pg_name", part3)
-    with open(os.path.join("./docs/pages", f"Page{file_random_name.replace('.jpg','')}.html"),'w',encoding='utf-8') as f:
+    with open(os.path.join("./docs/pages", f"Page{file_random_name.replace('.jpg', '')}.html"), 'w',
+              encoding='utf-8') as f:
         f.write(html_template)
-    print(f"[Success] write page:{file_random_name.replace('.jpg',''),'.html'}")
+    print(f"[Success] write page:{file_random_name.replace('.jpg', ''), '.html'}")
 
     print(f"[Success] {filename} finish and is being removed.")
     os.remove(file_path)
     return
 
     # TODO:  后续逻辑可以继续写在这里
-
 
 
 def count_image_log_rows():
@@ -266,6 +262,7 @@ def count_image_log_rows():
     except Exception as e:
         print(f"发生错误: {str(e)}")
         return 0
+
 
 def get_nth_row_content(n):
     try:
@@ -287,11 +284,14 @@ def get_nth_row_content(n):
         return None
 
 
-
 def main():
     if not os.path.exists(input_dir):
         print(f"{input_dir} does not exist.")
         return
+
+    for filename in os.listdir(input_dir):
+        input_path = os.path.join(input_dir, filename)
+        resize_image(input_path)
 
     existing_md5s = get_existing_md5_map(existing_dir)
 
@@ -309,7 +309,7 @@ def main():
             process_new_file(input_path)
     # 完成并生index.html
     image_count = count_image_log_rows()
-    pages_num = math.ceil(image_count /28)
+    pages_num = math.ceil(image_count / 28)
     for this_page_num in range(pages_num):
         html_template = """<!DOCTYPE html>
 <html lang="zh-CN">
@@ -538,8 +538,9 @@ CuteNew
 """
         for index in range(28 if this_page_num < pages_num - 1 else image_count % 28):
             nth_row_content = get_nth_row_content(this_page_num * 28 + index + 1)
-            print(this_page_num,nth_row_content)
-            html_template = html_template.replace(f"***replace_me***", f'''<a href="pages/Page{nth_row_content[1].replace('.jpg','')}.html" class="gallery-item">
+            print(this_page_num, nth_row_content)
+            html_template = html_template.replace(f"***replace_me***",
+                                                  f'''<a href="pages/Page{nth_row_content[1].replace('.jpg', '')}.html" class="gallery-item">
   <img src="https://raw.githubusercontent.com/CuteNewWebDeveloper/CuteNew_gallery/refs/heads/main/docs/images_preview/{nth_row_content[1]}" alt="图片{nth_row_content[0]}">
   <div class="caption tags">
   <span class="tag tag1">{nth_row_content[2]}</span>
@@ -550,10 +551,11 @@ CuteNew
 </a>
 
 ***replace_me***''')
-        html_template = html_template.replace('***replace_me***','')
+        html_template = html_template.replace('***replace_me***', '')
         html_template = html_template.replace('**replace_me_as_Current_pages********', str(this_page_num + 1))
         html_template = html_template.replace('**replace_me_as_totalPages********', str(pages_num))
-        with open('./docs/index.html' if this_page_num == 0 else f'./docs/page{this_page_num + 1}.html', 'w', encoding='utf-8') as f:
+        with open('./docs/index.html' if this_page_num == 0 else f'./docs/page{this_page_num + 1}.html', 'w',
+                  encoding='utf-8') as f:
             f.write(html_template)
 
 
