@@ -35,8 +35,8 @@ def get_existing_md5_map(directory):
 
 def resize_images(gallery_path):
     # Ensure the directory exists
-    if not os.path.exists(gallery_path):
-        print(f"Directory {gallery_path} does not exist.")
+    if not os.path.isdir(gallery_path):
+        print(f"Directory {gallery_path} does not exist or is not a directory.")
         return
 
     # Iterate through all files in the directory
@@ -66,10 +66,11 @@ def resize_images(gallery_path):
                         if resized_img.mode in ('RGBA', 'P'):
                             resized_img = resized_img.convert('RGB')
 
+                        # Define output path, replacing original extension with .jpg if needed
+                        output_filename = f"resized_{os.path.splitext(filename)[0]}.jpg"
+                        output_path = os.path.join(gallery_path, output_filename)
+
                         # Save the resized image with quality 95
-                        output_path = os.path.join(gallery_path, f"resized_{filename}")
-                        if filename.lower().endswith('.png'):
-                            output_path = output_path.rsplit('.', 1)[0] + '.jpg'
                         resized_img.save(output_path, 'JPEG', quality=95)
                         print(f"Resized and saved: {output_path}")
                     else:
@@ -77,7 +78,6 @@ def resize_images(gallery_path):
 
             except Exception as e:
                 print(f"Error processing {filename}: {str(e)}")
-
 
 def process_new_file(file_path):
     filename = os.path.basename(file_path)
