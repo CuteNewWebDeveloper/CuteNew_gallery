@@ -419,23 +419,6 @@ CuteNew
 
 
 
-<nav class="pagination" style="text-align:center; margin-top: 16px;">
-  <script>
-    const currentPage = parseInt(window.location.pathname.match(/page(\d+)\.html/)?.[1] || '1');
-    const totalPages = 10;
-
-    for (let i = 1; i <= totalPages; i++) {
-      if (i === currentPage) {
-        document.write(`<span style="margin:0 6px; font-weight:bold; color:gray;">${i}</span>`);
-      } else {
-        const href = i === 1 ? "index.html" : `page${i}.html`;
-        document.write(`<a href="${href}" style="margin:0 6px;">${i}</a>`);
-      }
-    }
-  </script>
-</nav>
-
-
 
 
 
@@ -450,5 +433,75 @@ CuteNew
 
 
       </main>
+
+
+
+
+
+<div class="pagination" style="text-align: center; margin: 40px 0;">
+  <script>
+    const currentPage = 5; // ✅ 当前页码（手动填）
+    const totalPages = 20; // ✅ 总页数（手动填）
+
+    const range = 2; // 当前页前后展示的页数范围
+    let html = '';
+
+    // 首页 + 上一页
+    if (currentPage > 1) {
+      html += `<a href="${currentPage === 2 ? 'index.html' : 'page' + (currentPage - 1) + '.html'}">« 上一页</a> `;
+      html += `<a href="index.html">首页</a> `;
+    }
+
+    // 前置页码
+    for (let i = Math.max(1, currentPage - range); i < currentPage; i++) {
+      html += `<a href="${i === 1 ? 'index.html' : 'page' + i + '.html'}">${i}</a> `;
+    }
+
+    // 当前页高亮
+    html += `<span style="margin:0 8px; font-weight:bold; color:gray;">${currentPage}</span>`;
+
+    // 后置页码
+    for (let i = currentPage + 1; i <= Math.min(totalPages, currentPage + range); i++) {
+      html += `<a href="page${i}.html">${i}</a> `;
+    }
+
+    // 下一页 + 尾页
+    if (currentPage < totalPages) {
+      html += `<a href="page${currentPage + 1}.html">下一页 »</a> `;
+      html += `<a href="page${totalPages}.html">尾页</a>`;
+    }
+
+    // 跳转输入框
+    html += `<br/><br/>
+      <label for="gotoPage">跳转到第</label>
+      <input id="gotoPage" type="number" min="1" max="${totalPages}" value="${currentPage}" style="width: 60px; text-align: center;">
+      <span>页</span>
+      <button onclick="gotoPage()">跳转</button>`;
+
+    // 写入到页面中
+    document.write(html);
+
+    // 跳转函数
+    function gotoPage() {
+      const page = parseInt(document.getElementById('gotoPage').value);
+      if (isNaN(page) || page < 1 || page > totalPages) {
+        alert('请输入有效的页码！');
+        return;
+      }
+      if (page === 1) {
+        location.href = 'index.html';
+      } else {
+        location.href = `page${page}.html`;
+      }
+    }
+  </script>
+</div>
+
+
+
+
+  
+
+  
 </body>
 </html>
