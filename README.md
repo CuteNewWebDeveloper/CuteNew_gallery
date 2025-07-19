@@ -1,4 +1,17 @@
 网页：https://cutenewwebdeveloper.github.io/CuteNew_gallery/  
+
+
+---
+<上传指南>  
+将图片（jpg格式）命名为 ：`<时间> <地点> <作者名>.jpg`  
+上传至仓库：`CuteNew_gallery/docs/input_material/`  
+注意不是`CuteNew_gallery/docs/input_material/DonotDeleteME/`这是为了防止此路径被删除而设的  
+workflow将自动更新图片详情页和总index页面  
+
+
+
+
+---
 <开发者笔记>**上传图片-自动处理生成静态网页工作流程：**  
 -当CuteNew_gallery/docs/input_material/被更改时或手动，触发workflow（一个Python程序）；  
 ① 对每个CuteNew_gallery/docs/input_material/中的图片检测md5值，如果此md5已经与存在于CuteNew_gallery/docs/images/一个文件相同，跳过并删除此文件；  
