@@ -181,6 +181,7 @@ def process_new_file(file_path):
       <div class="caption">Replace_me_as_time · Replace_me_as_location · Replace_me_as_pg_name · 2021</div>
     </div>
   </main>
+  <br/><br/>
 </body>
 </html>
 """
