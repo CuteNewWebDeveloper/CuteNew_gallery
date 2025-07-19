@@ -223,7 +223,7 @@ def process_new_file(file_path):
   </header>
   <main class="container">
     <div class="image-wrapper">
-      <img src="https://raw.githubusercontent.com/CuteNewWebDeveloper/CuteNew_gallery/refs/heads/main/docs/images/Replace_me_as_real_jpg_file_name" alt="展示图片">
+      <img src="images/Replace_me_as_real_jpg_file_name" alt="展示图片">
       <div class="caption">Replace_me_as_time · Replace_me_as_location · Replace_me_as_pg_name · 2021</div>
     </div>
   </main>
@@ -541,7 +541,7 @@ CuteNew
             print(this_page_num, nth_row_content)
             html_template = html_template.replace(f"***replace_me***",
                                                   f'''<a href="pages/Page{nth_row_content[1].replace('.jpg', '')}.html" class="gallery-item">
-  <img src="https://raw.githubusercontent.com/CuteNewWebDeveloper/CuteNew_gallery/refs/heads/main/docs/images_preview/{nth_row_content[1]}" alt="图片{nth_row_content[0]}">
+  <img src="images_preview/{nth_row_content[1]}" alt="图片{nth_row_content[0]}">
   <div class="caption tags">
   <span class="tag tag1">{nth_row_content[2]}</span>
   <span class="tag tag2">{nth_row_content[3]}</span>
