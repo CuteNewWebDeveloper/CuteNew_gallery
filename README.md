@@ -4,7 +4,7 @@
 ① 对每个CuteNew_gallery/docs/input_material/中的图片检测md5值，如果此md5已经与存在于CuteNew_gallery/docs/images/一个文件相同，跳过并删除此文件；  
 ② 不存在，则：  
 ②-① 原文件名split为三分：时间地点作者名，生成随机文件名。追加写入csv：图片id，图片名称，时间地点作者名等信息；  
-②-② 复制到CuteNew_gallery/docs/images/，同时生成同名.txt，内存储时间地点作者名和其他备注；  
+②-② 复制到CuteNew_gallery/docs/images/；  
 ②-③ 复制到CuteNew_gallery/docs/images_preview/并转换为缩略图；  
 ②-④ 依据html模板生成图片展示页，并保存到CuteNew_gallery/docs/pages/；  
 ②-⑤ 按顺序，依据html模板更新gallery首页；  
