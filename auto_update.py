@@ -223,7 +223,7 @@ def process_new_file(file_path):
   </header>
   <main class="container">
     <div class="image-wrapper">
-      <img src="images/Replace_me_as_real_jpg_file_name" alt="展示图片">
+      <img src="../images/Replace_me_as_real_jpg_file_name" alt="展示图片">
       <div class="caption">Replace_me_as_time · Replace_me_as_location · Replace_me_as_pg_name · 2021</div>
     </div>
   </main>
