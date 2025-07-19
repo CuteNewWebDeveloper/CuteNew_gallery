@@ -6,7 +6,7 @@
 将图片（jpg格式）命名为 ：`<时间> <地点> <作者名>.jpg`  
 上传至仓库：`CuteNew_gallery/docs/input_material/`  
 注意不是`CuteNew_gallery/docs/input_material/DonotDeleteME/`这是为了防止此路径被删除而设的  
-workflow将自动更新图片详情页和总index页面  
+workflow将自动更新图片详情页和首页  
 
 
 
