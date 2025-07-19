@@ -192,6 +192,10 @@ def process_new_file(file_path):
         f.write(html_template)
     print(f"[Success] write page:{file_random_name.replace('.jpg',''),'.html'}")
 
+    print(f"[Success] {filename} finish and is being removed.")
+    os.remove(file_path)
+    return
+    
     # TODO:  后续逻辑可以继续写在这里
 
 
