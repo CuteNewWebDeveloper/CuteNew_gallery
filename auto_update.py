@@ -211,7 +211,7 @@ def count_image_log_rows():
             next(reader, None)
             # 计数非表头行
             row_count = sum(1 for row in reader)
-            return row_count-1
+            return row_count
     except FileNotFoundError:
         print("文件 './docs/images/image_log.csv' 未找到")
         return 0
@@ -488,7 +488,7 @@ CuteNew
 </body>
 </html>
 """
-        for index in range(28):
+        for index in range(28 if this_page_num < pages_num - 1 else image_count % 28):
             nth_row_content = get_nth_row_content(this_page_num * 28 + index + 1)
             print(this_page_num,nth_row_content)
             html_template = html_template.replace(f"***replace_me***", f'''<a href="pages/Page_1040397.html" class="gallery-item">
@@ -502,6 +502,7 @@ CuteNew
 </a>
 
 ***replace_me***''')
+        html_template = html_template.replace('***replace_me***','')
         with open('./docs/index.html' if this_page_num == 0 else f'./docs/page{this_page_num + 1}.html', 'w', encoding='utf-8') as f:
             f.write(html_template)
 
