@@ -190,7 +190,7 @@ def process_new_file(file_path):
     html_template.replace("Replace_me_as_pg_name", part3)
     with open(os.path.join("./docs/pages", f"Page{file_random_name.replace('.jpg','')}.html"),'w',encoding='utf-8') as f:
         f.write(html_template)
-    print(f"[Success] write page:{os.path.join("./docs/pages", f"Page{file_random_name.replace('.jpg','')}.html"}")
+    print(f"[Success] write page:{file_random_name.replace('.jpg',''),'.html'}")
 
     # TODO:  后续逻辑可以继续写在这里
 
