@@ -105,10 +105,10 @@ def process_new_file(file_path):
     with Image.open(file_path) as img:
         # Calculate new dimensions to maintain aspect ratio
         width, height = img.size
-        new_width = 520
+        new_width = 380
         new_height = int((new_width / width) * height)
         resized_img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
-        resized_img.save(preview_path, 'JPEG')
+        resized_img.save(preview_path, 'JPEG', quality=55)
         print(f"[Success] Resized and copied {filename} to {preview_path} (width: {new_width}px)")
 
     html_template = """<!DOCTYPE html>
