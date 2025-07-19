@@ -78,60 +78,88 @@ def resize_image(image_path):
         print(f"Error processing {image_path}: {str(e)}")
 
 
-def add_text_bar_to_image(image_path, ):
+def add_text_bar_to_image(image_path):
     # Extract filename from path and process it
     filename = os.path.basename(image_path)
     # Remove .jpg or .JPG (case-insensitive)
     name = os.path.splitext(filename)[0].lower().replace('.jpg', '')
-    # Split by spaces and get the third segment (index 2)
+    # Split by spaces and get the third segment (index 2), and year from first segment
     try:
+        time_of_photo = name.split()[0]
+        location = name.split()[1].upper()
         year = name.split()[0].split('.')[0]
         name = name.split()[2]
     except IndexError:
         year = 'unknown'
         name = "unknown"  # Fallback if third segment doesn't exist
-
+        return
     # Open the image
-    if os.path.isfile(image_path):
-        img = Image.open(image_path)
-        width, height = img.size
+    img = Image.open(image_path)
+    width, height = img.size
 
-        # Create a new image with extra height for the black bar
-        new_height = height + 17
-        new_img = Image.new('RGB', (width, new_height), (0, 0, 0))  # Black background
-        new_img.paste(img, (0, 0))  # Paste original image at the top
+    # Create a new image with extra height for the black bar
+    new_height = height + 17
+    new_img = Image.new('RGB', (width, new_height), (0, 0, 0))  # Black background
+    new_img.paste(img, (0, 0))  # Paste original image at the top
 
-        # Create a draw object
-        draw = ImageDraw.Draw(new_img)
+    # Create a draw object
+    draw = ImageDraw.Draw(new_img)
 
-        # Load a font (use default if arial.ttf is not available)
-        try:
-            font = ImageFont.truetype("arial.ttf", 12)
-        except IOError:
-            font = ImageFont.load_default()
+    # Load a font (use default if arial.ttf is not available)
+    try:
+        font = ImageFont.truetype("arial.ttf", 12)
+    except IOError:
+        font = ImageFont.load_default()
 
-        # Calculate text positions
-        text_y = height + 2  # Slight padding from top of black bar
+    # Calculate text widths to avoid overlap
+    left_text = f' © {year} {name}, All Rights Reserved.'
+    right_text = f'[{time_of_photo}, {location}] CuteNew Gallery Images'
+    left_text_bbox = draw.textbbox((0, 0), left_text, font=font)
+    right_text_bbox = draw.textbbox((0, 0), right_text, font=font)
+    left_text_width = left_text_bbox[2] - left_text_bbox[0]
+    right_text_width = right_text_bbox[2] - right_text_bbox[0]
 
-        # Draw left-aligned text
-        draw.text((10, text_y), f' © {year} {name}, All Rights Reserved.', fill=(255, 255, 255), font=font)
+    # Define central region for parallelograms (50% of image width, avoiding text)
+    margin = 20  # Extra padding to ensure no overlap with text
+    central_width = width // 2
+    start_x = max((width - central_width) // 2, left_text_width + margin + 10)
+    end_x = min(width - (right_text_width + margin + 10), start_x + central_width)
 
-        # Draw right-aligned text
-        right_text = 'CuteNew Gallery Images'
-        right_text_bbox = draw.textbbox((0, 0), right_text, font=font)
-        right_text_width = right_text_bbox[2] - right_text_bbox[0]
-        draw.text((width - right_text_width - 10, text_y), right_text, fill=(255, 255, 255), font=font)
+    # Draw parallelogram pattern in the central region
+    parallelogram_width = 20
+    parallelogram_height = 10
+    tilt = 5  # Horizontal offset for tilt effect
+    spacing = 30  # Space between parallelograms
+    y_top = height + 3  # Center parallelograms vertically in bar
+    for x in range(start_x, end_x, spacing):
+        points = [
+            (x, y_top),
+            (x + parallelogram_width, y_top),
+            (x + parallelogram_width + tilt, y_top + parallelogram_height),
+            (x + tilt, y_top + parallelogram_height)
+        ]
+        draw.polygon(points, fill=(255, 255, 255))  # White parallelograms
 
-        # Save the new image
-        output_path = os.path.join(os.path.dirname(image_path), f"{filename}")
-        new_img.save(output_path)
+    # Calculate text positions
+    text_y = height + 2  # Slight padding from top of black bar
 
-        return name, output_path
+    # Draw left-aligned text
+    draw.text((10, text_y), left_text, fill=(255, 255, 255), font=font)
+
+    # Draw right-aligned text
+    draw.text((width - right_text_width - 10, text_y), right_text, fill=(255, 255, 255), font=font)
+
+    # Save the new image
+    output_path = os.path.join(os.path.dirname(image_path), f"{filename}")
+    new_img.save(output_path, quality=100)
+
+    return name, output_path
+
 
 def crop_bottom_bar(image_path):
     # Open the image
     if not os.path.isfile(image_path):
-        return 
+        return
     img = Image.open(image_path)
     width, height = img.size
 
@@ -145,9 +173,10 @@ def crop_bottom_bar(image_path):
     # Save the cropped image
     filename = os.path.basename(image_path)
     output_path = os.path.join(os.path.dirname(image_path), f"{filename}")
-    cropped_img.save(output_path)
+    cropped_img.save(output_path, quality=100)
 
     return output_path
+
 
 def process_new_file(file_path):
     filename = os.path.basename(file_path)
@@ -343,12 +372,16 @@ def get_nth_row_content(n):
             reader = csv.reader(file)
             # 跳过表头
             next(reader, None)
-            # 遍历到第 n 行
-            for i, row in enumerate(reader, 1):
-                if i == n:
-                    return row
-            print(f"未找到第 {n} 行，文件行数不足")
-            return None
+            # 将所有行读入列表
+            rows = list(reader)
+            # 计算总行数
+            total_rows = len(rows)
+            # 检查 n 是否有效
+            if n <= 0 or n > total_rows:
+                print(f"无效的行号 {n}，文件有效行数为 {total_rows}")
+                return None
+            # 返回倒数第 n 行
+            return rows[total_rows - n]
     except FileNotFoundError:
         print("文件 './docs/images/image_log.csv' 未找到")
         return None
