@@ -211,7 +211,7 @@ def count_image_log_rows():
             next(reader, None)
             # 计数非表头行
             row_count = sum(1 for row in reader)
-            return row_count
+            return row_count-1
     except FileNotFoundError:
         print("文件 './docs/images/image_log.csv' 未找到")
         return 0
