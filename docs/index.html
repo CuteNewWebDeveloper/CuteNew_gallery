@@ -482,9 +482,8 @@ CuteNew
 
 <div class="pagination" style="text-align: center; margin: 40px 0;">
   <script>
-    const currentPage = 5; // ✅ 当前页码（手动填）
-    const totalPages = 20; // ✅ 总页数（手动填）
-
+    const currentPage = 5; // 当前页码
+    const totalPages = 20; // 总页数
     const range = 2; // 当前页前后展示的页数范围
     let html = '';
 
@@ -500,7 +499,7 @@ CuteNew
     }
 
     // 当前页高亮
-    html += `<span style="margin:0 8px; font-weight:bold; color:gray;">${currentPage}</span>`;
+    html += `<span style="margin: 0 8px; font-weight: bold; color: gray;">${currentPage}</span>`;
 
     // 后置页码
     for (let i = currentPage + 1; i <= Math.min(totalPages, currentPage + range); i++) {
@@ -514,15 +513,15 @@ CuteNew
     }
 
     // 跳转输入框
-html += `<br/><br/>
-  <div class="goto-container">
-    <label for="gotoPage">跳转到第</label>
-    <input id="gotoPage" type="number" min="1" max="${totalPages}" value="${currentPage}">
-    <span>页</span>
-    <button onclick="gotoPage()">跳转</button>
-  </div>
-`;
-
+    html += `
+      <br/><br/>
+      <div class="goto-container">
+        <label for="gotoPage">跳转到第</label>
+        <input id="gotoPage" type="number" min="1" max="${totalPages}" value="${currentPage}">
+        <span>页</span>
+        <button onclick="gotoPage()">跳转</button>
+      </div>
+    `;
 
     // 写入到页面中
     document.write(html);
@@ -534,16 +533,10 @@ html += `<br/><br/>
         alert('请输入有效的页码！');
         return;
       }
-      if (page === 1) {
-        location.href = 'index.html';
-      } else {
-        location.href = `page${page}.html`;
-      }
+      location.href = page === 1 ? 'index.html' : `page${page}.html`;
     }
   </script>
 </div>
-
-
 
 
   
