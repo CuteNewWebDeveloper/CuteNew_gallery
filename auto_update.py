@@ -425,8 +425,8 @@ CuteNew
 
 <div class="pagination" style="text-align: center; margin: 40px 0;">
   <script>
-    const currentPage = 5; // 当前页码
-    const totalPages = 20; // 总页数
+    const currentPage = **replace_me_as_Current_pages********; // 当前页码
+    const totalPages = **replace_me_as_totalPages********; // 总页数
     const range = 2; // 当前页前后展示的页数范围
     let html = '';
 
@@ -503,6 +503,8 @@ CuteNew
 
 ***replace_me***''')
         html_template = html_template.replace('***replace_me***','')
+        html_template = html_template.replace('**replace_me_as_Current_pages********', str(this_page_num + 1))
+        html_template = html_template.replace('**replace_me_as_totalPages********', str(pages_num))
         with open('./docs/index.html' if this_page_num == 0 else f'./docs/page{this_page_num + 1}.html', 'w', encoding='utf-8') as f:
             f.write(html_template)
 
