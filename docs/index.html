@@ -419,14 +419,22 @@ CuteNew
 
 
 
-<nav class="pagination" style="text-align: center; margin-top: 16px;">
-  <a href="page1.html">« 上一页</a>
-  <a href="page1.html">1</a>
-  <a href="page2.html">2</a>
-  <a href="page3.html">3</a>
-  <a href="page4.html">4</a>
-  <a href="page3.html">下一页 »</a>
+<nav class="pagination" style="text-align:center; margin-top: 16px;">
+  <script>
+    const currentPage = parseInt(window.location.pathname.match(/page(\d+)\.html/)?.[1] || '1');
+    const totalPages = 10;
+
+    for (let i = 1; i <= totalPages; i++) {
+      if (i === currentPage) {
+        document.write(`<span style="margin:0 6px; font-weight:bold; color:gray;">${i}</span>`);
+      } else {
+        const href = i === 1 ? "index.html" : `page${i}.html`;
+        document.write(`<a href="${href}" style="margin:0 6px;">${i}</a>`);
+      }
+    }
+  </script>
 </nav>
+
 
 
 
