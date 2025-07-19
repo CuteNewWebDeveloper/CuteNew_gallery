@@ -184,10 +184,10 @@ def process_new_file(file_path):
 </body>
 </html>
 """
-    html_template.replace('Replace_me_as_real_jpg_file_name',file_random_name)
-    html_template.replace("Replace_me_as_time",part1)
-    html_template.replace("Replace_me_as_location", part2)
-    html_template.replace("Replace_me_as_pg_name", part3)
+    html_template = html_template.replace('Replace_me_as_real_jpg_file_name',file_random_name)
+    html_template = html_template.replace("Replace_me_as_time",part1)
+    html_template = html_template.replace("Replace_me_as_location", part2)
+    html_template = html_template.replace("Replace_me_as_pg_name", part3)
     with open(os.path.join("./docs/pages", f"Page{file_random_name.replace('.jpg','')}.html"),'w',encoding='utf-8') as f:
         f.write(html_template)
     print(f"[Success] write page:{file_random_name.replace('.jpg',''),'.html'}")
