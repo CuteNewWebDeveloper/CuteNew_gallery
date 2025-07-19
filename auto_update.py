@@ -62,7 +62,7 @@ def resize_image(image_path):
                     resized_img = resized_img.convert('RGB')
 
                 # Define output path in the same directory
-                output_filename = f"resized_{os.path.basename(image_path)}"
+                output_filename = f"{os.path.basename(image_path)}"
                 if image_path.lower().endswith(('.png', '.bmp', '.tiff')):
                     output_filename = output_filename.rsplit('.', 1)[0] + '.jpg'
                 output_path = os.path.join(os.path.dirname(image_path), output_filename)
