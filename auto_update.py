@@ -489,8 +489,8 @@ CuteNew
 </html>
 """
         for index in range(28):
-            print(this_page_num)
             nth_row_content = get_nth_row_content(this_page_num * 28 + index + 1)
+            print(this_page_num,nth_row_content)
             html_template = html_template.replace(f"***replace_me***", f'''<a href="pages/Page_1040397.html" class="gallery-item">
   <img src="https://raw.githubusercontent.com/CuteNewWebDeveloper/CuteNew_gallery/refs/heads/main/docs/images_preview/{nth_row_content[1]}" alt="图片{nth_row_content[0]}">
   <div class="caption tags">
