@@ -33,6 +33,52 @@ def get_existing_md5_map(directory):
     return md5_map
 
 
+def resize_images(gallery_path):
+    # Ensure the directory exists
+    if not os.path.exists(gallery_path):
+        print(f"Directory {gallery_path} does not exist.")
+        return
+
+    # Iterate through all files in the directory
+    for filename in os.listdir(gallery_path):
+        # Check if the file is an image
+        if filename.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp', '.tiff')):
+            file_path = os.path.join(gallery_path, filename)
+
+            try:
+                # Open the image
+                with Image.open(file_path) as img:
+                    # Get image dimensions
+                    width, height = img.size
+                    max_dimension = max(width, height)
+
+                    # Check if resizing is needed
+                    if max_dimension > 1920:
+                        # Calculate the scaling factor
+                        scale = 1920 / max_dimension
+                        new_width = int(width * scale)
+                        new_height = int(height * scale)
+
+                        # Resize the image
+                        resized_img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
+
+                        # Convert to RGB if necessary (for PNG or other formats with transparency)
+                        if resized_img.mode in ('RGBA', 'P'):
+                            resized_img = resized_img.convert('RGB')
+
+                        # Save the resized image with quality 95
+                        output_path = os.path.join(gallery_path, f"resized_{filename}")
+                        if filename.lower().endswith('.png'):
+                            output_path = output_path.rsplit('.', 1)[0] + '.jpg'
+                        resized_img.save(output_path, 'JPEG', quality=95)
+                        print(f"Resized and saved: {output_path}")
+                    else:
+                        print(f"No resizing needed for: {filename}")
+
+            except Exception as e:
+                print(f"Error processing {filename}: {str(e)}")
+
+
 def process_new_file(file_path):
     filename = os.path.basename(file_path)
     name, ext = os.path.splitext(filename)
@@ -100,6 +146,8 @@ def process_new_file(file_path):
     # Copy original image to gallery
     shutil.copy(file_path, gallery_path)
     print(f"[Success] Copied {filename} to {gallery_path}")
+    resize_images(gallery_path)
+
 
     # Resize and copy image to preview
     with Image.open(file_path) as img:
