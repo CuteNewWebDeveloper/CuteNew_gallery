@@ -1,10 +1,8 @@
-print('hello world')
-
 import os
 import hashlib
 
-input_dir = "CuteNew_gallery/docs/input_material"
-existing_dir = "CuteNew_gallery/docs/images"
+input_dir = "./docs/input_material"
+existing_dir = "./docs/images"
 
 def compute_md5(file_path):
     hasher = hashlib.md5()
@@ -22,10 +20,32 @@ def get_existing_md5_map(directory):
             md5_map[md5] = full_path
     return md5_map
 
+def nothing_happen_just_highlight_record(): pass
+
+
+@nothing_happen_just_highlight_record
 def process_new_file(file_path):
-    print(f"Processing new file: {file_path}")
-    # 将来这里可以放入图片重命名、压缩等操作
-    pass
+    filename = os.path.basename(file_path)
+    name, ext = os.path.splitext(filename)
+
+    if ext.lower() != '.jpg':
+        print(f"[Invalid] {filename} is not a JPG image. Deleting...")
+        os.remove(file_path)
+        return
+
+    parts = name.split(" ")
+
+    if len(parts) != 3:
+        print(f"[Warning] {filename} does not split cleanly into 3 parts.")
+        part1, part2, part3 = (parts + [""] * 3)[:3]  # 补齐不足3项
+    else:
+        part1, part2, part3 = parts
+
+    print(f"[Valid] Processing JPG image: {filename}")
+    print(f"  → Part1: {part1}, Part2: {part2}, Part3: {part3}")
+
+    # 后续逻辑可以继续写在这里
+
 
 def main():
     if not os.path.exists(input_dir):
