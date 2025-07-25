@@ -1,0 +1,41 @@
+name: Crop Images to 16:10 Aspect Ratio
+
+on:
+  push:
+    paths:
+      - 'docs/images_preview/**'
+  workflow_dispatch:
+
+jobs:
+  crop-images:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pillow
+
+    - name: Crop images to 16:10
+      run: |
+        python .github/scripts/crop_images.py
+      env:
+        TARGET_DIR: ./docs/images_preview
+
+    - name: Commit and push changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add docs/images_preview/*
+        git diff --staged --quiet || git commit -m "Crop images to 16:10 aspect ratio"
+        git push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
