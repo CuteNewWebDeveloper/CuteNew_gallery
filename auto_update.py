@@ -647,7 +647,7 @@ CuteNew
         for index in range(28 if this_page_num < pages_num - 1 else image_count % 28):
             nth_row_content = get_nth_row_content(this_page_num * 28 + index + 1)
             print(this_page_num, nth_row_content)
-            print('replace',nth_row_content[1].replace('.jpg', ''),nth_row_content[0])
+            print('replace',nth_row_content)
             html_template = html_template.replace(f"***replace_me***",
                                                   f'''<a href="pages/Page{nth_row_content[1].replace('.jpg', '')}.html" class="gallery-item">
   <img src="images_preview/{nth_row_content[1]}" alt="图片{nth_row_content[0]}">
