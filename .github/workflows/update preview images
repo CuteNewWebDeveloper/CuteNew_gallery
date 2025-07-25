@@ -26,7 +26,7 @@ jobs:
 
     - name: Crop images to 16:10
       run: |
-        python .github/scripts/crop_images.py
+        python crop_images.py
       env:
         TARGET_DIR: ./docs/images_preview
 
