@@ -78,6 +78,22 @@ def resize_image(image_path):
         print(f"Error processing {image_path}: {str(e)}")
 
 
+# Load a font that supports Chinese (use fallback if not available)
+def load_font(size=12):
+    possible_paths = [
+        "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",  # GitHub Actions Ubuntu
+        "/usr/share/fonts/truetype/arphic/ukai.ttc",               # 另一种 Ubuntu 中文字体
+        "/System/Library/Fonts/STHeiti Light.ttc",                # macOS
+        "C:/Windows/Fonts/simhei.ttf",                            # Windows SimHei 黑体
+    ]
+    for path in possible_paths:
+        if os.path.exists(path):
+            return ImageFont.truetype(path, size)
+    print("[Warning] No Chinese font found, using default.")
+    return ImageFont.load_default()
+
+
+
 def add_text_bar_to_image(image_path):
     if not os.path.isfile(image_path):
         print(f"Skipped (not a file): {image_path}")
@@ -123,7 +139,9 @@ def add_text_bar_to_image(image_path):
 
     # Load a font (use default if arial.ttf is not available)
     try:
-        font = ImageFont.truetype("arial.ttf", 12)
+        
+        font = load_font(12)
+
     except IOError:
         font = ImageFont.load_default()
 
