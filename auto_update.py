@@ -625,7 +625,7 @@ CuteNew
     // 下一页 + 尾页
     if (currentPage < totalPages) {
       html += `<a href="page${currentPage + 1}.html">下一页 »</a> `;
-      html += `<a href="page${totalPages}.html">尾页</a>`;
+      html += `<a href="page${totalPages}.html">尾页（第**replace_me_as_totalPages********页）</a>`;
     }
 
     // 跳转输入框
