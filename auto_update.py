@@ -79,17 +79,19 @@ def resize_image(image_path):
 
 
 def add_text_bar_to_image(image_path):
+    if not os.path.isfile(image_path):
+        print(f"Skipped (not a file): {image_path}")
+        return  # 或者 return None
+
     # Extract filename from path and process it
     filename = os.path.basename(image_path)
 
-    # Remove extension (.jpg/.JPG/.Jpg etc.) case-insensitively, but keep name casing
+    # Remove extension case-insensitively
     name, ext = os.path.splitext(filename)
-    if ext.lower() == '.jpg':
-        pass  # ext is .jpg, so we can continue
-    else:
+    if ext.lower() != '.jpg':
         print(f"[Warning] Unexpected file extension: {ext}")
+        return
 
-    # Split by spaces
     parts = name.split()
     if len(parts) < 3:
         print(f"[Warning] {filename} does not split cleanly into at least 3 parts.")
@@ -100,6 +102,8 @@ def add_text_bar_to_image(image_path):
         time_of_photo = parts[0]
         location = parts[1].upper()
         name = ' '.join(parts[2:])
+
+    year = time_of_photo.split('.')[0] if '.' in time_of_photo else time_of_photo
 
     # Extract year from time_of_photo (before the dot)
     year = time_of_photo.split('.')[0] if '.' in time_of_photo else time_of_photo
