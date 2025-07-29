@@ -81,19 +81,30 @@ def resize_image(image_path):
 def add_text_bar_to_image(image_path):
     # Extract filename from path and process it
     filename = os.path.basename(image_path)
-    # Remove .jpg or .JPG (case-insensitive)
-    name = os.path.splitext(filename)[0].lower().replace('.jpg', '')
-    # Split by spaces and get the third segment (index 2), and year from first segment
-    try:
-        time_of_photo = name.split()[0]
-        location = name.split()[1].upper()
-        year = name.split()[0].split('.')[0]
-        name = ' '.join(name.split()[2:])
 
-    except IndexError:
-        year = 'unknown'
-        name = "unknown"  # Fallback if third segment doesn't exist
-        return
+    # Remove extension (.jpg/.JPG/.Jpg etc.) case-insensitively, but keep name casing
+    name, ext = os.path.splitext(filename)
+    if ext.lower() == '.jpg':
+        pass  # ext is .jpg, so we can continue
+    else:
+        print(f"[Warning] Unexpected file extension: {ext}")
+
+    # Split by spaces
+    parts = name.split()
+    if len(parts) < 3:
+        print(f"[Warning] {filename} does not split cleanly into at least 3 parts.")
+        time_of_photo = parts[0] if len(parts) > 0 else ""
+        location = parts[1].upper() if len(parts) > 1 else ""
+        name = ""
+    else:
+        time_of_photo = parts[0]
+        location = parts[1].upper()
+        name = ' '.join(parts[2:])
+
+    # Extract year from time_of_photo (before the dot)
+    year = time_of_photo.split('.')[0] if '.' in time_of_photo else time_of_photo
+
+
     # Open the image
     img = Image.open(image_path)
     width, height = img.size
