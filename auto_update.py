@@ -88,7 +88,8 @@ def add_text_bar_to_image(image_path):
         time_of_photo = name.split()[0]
         location = name.split()[1].upper()
         year = name.split()[0].split('.')[0]
-        name = name.split()[2]
+        name = ' '.join(name.split()[2:])
+
     except IndexError:
         year = 'unknown'
         name = "unknown"  # Fallback if third segment doesn't exist
@@ -188,12 +189,14 @@ def process_new_file(file_path):
         return
 
     parts = name.split(" ")
-
-    if len(parts) != 3:
+    
+    if len(parts) < 3:
         print(f"[Warning] {filename} does not split cleanly into 3 parts.")
-        part1, part2, part3 = (parts + [""] * 3)[:3]  # 补齐不足3项
+        part1, part2, part3 = (parts + [""] * 3)[:3]
     else:
-        part1, part2, part3 = parts
+        part1 = parts[0]
+        part2 = parts[1]
+        part3 = ' '.join(parts[2:])
 
     print(f"[Valid] Processing JPG image: {filename}")
     print(f"  → Part1: {part1}, Part2: {part2}, Part3: {part3}")
