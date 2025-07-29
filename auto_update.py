@@ -175,7 +175,10 @@ def add_text_bar_to_image(image_path):
         draw.polygon(points, fill=(255, 255, 255))  # White parallelograms
 
     # Calculate text positions
-    text_y = height + 2  # Slight padding from top of black bar
+    # Adjust vertical alignment based on actual text height
+    left_text_height = left_text_bbox[3] - left_text_bbox[1]
+    text_y = height + (17 - left_text_height) // 2  # Center text vertically in 17px bar
+
 
     # Draw left-aligned text
     draw.text((10, text_y), left_text, fill=(255, 255, 255), font=font)
