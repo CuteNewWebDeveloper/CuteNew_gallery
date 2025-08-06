@@ -55,7 +55,7 @@ def add_text_bar_to_image(image_path):
         return
     result = find_image_log_by_name(name)
     if not result: return
-    year =   result['time'].split()[0]  
+    year =   result['time'].split('.')[0]  
     location = result['location']
     name = result['photographer_name']
     time_of_photo = result['time']
