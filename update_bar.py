@@ -17,6 +17,20 @@ from PIL import Image, ImageDraw, ImageFont
 input_dir = "./docs/input_material"
 existing_dir = "./docs/images"
 
+def load_font(size=12):
+    possible_paths = [
+        "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",  # GitHub Actions Ubuntu
+        "/usr/share/fonts/truetype/arphic/ukai.ttc",               # 另一种 Ubuntu 中文字体
+        "/System/Library/Fonts/STHeiti Light.ttc",                # macOS
+        "C:/Windows/Fonts/simhei.ttf",                            # Windows SimHei 黑体
+    ]
+    for path in possible_paths:
+        if os.path.exists(path):
+            return ImageFont.truetype(path, size)
+    print("[Warning] No Chinese font found, using default.")
+    return ImageFont.load_default()
+
+
 def find_image_log_by_name(name, csv_path='./docs/images/image_log.csv'):
     with open(csv_path, newline='', encoding='utf-8') as csvfile:
         reader = csv.DictReader(csvfile)
