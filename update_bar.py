@@ -54,6 +54,7 @@ def add_text_bar_to_image(image_path):
         print(f"[Warning] Unexpected file extension: {ext}")
         return
     result = find_image_log_by_name(name)
+    if not result: return
     year =   result['time'].split()[0]  
     location = result['location']
     name = result['photographer_name']
