@@ -57,7 +57,7 @@ def add_text_bar_to_image(image_path):
     year =   result['time'].split()[0]  
     location = result['location']
     name = result['photographer_name']
-
+    time_of_photo = result['time']
   
 
 
