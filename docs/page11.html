@@ -149,6 +149,16 @@ CuteNew
 
 
 
+<a href="pages/Page8a4a8ad7-30e2-4e20-9d94-b81e302a2642.html" class="gallery-item">
+  <img src="images_preview/8a4a8ad7-30e2-4e20-9d94-b81e302a2642.jpg" alt="图片19">
+  <div class="caption tags">
+  <span class="tag tag1">2024.5.1</span>
+  <span class="tag tag2">PEK</span>
+  <span class="tag tag3">RoMANTiC PEK</span>
+</div>
+
+</a>
+
 <a href="pages/Page37136903-79e9-4e28-9118-a53a4b211053.html" class="gallery-item">
   <img src="images_preview/37136903-79e9-4e28-9118-a53a4b211053.jpg" alt="图片18">
   <div class="caption tags">
@@ -367,14 +377,14 @@ CuteNew
     // 下一页 + 尾页
     if (currentPage < totalPages) {
       html += `<a href="page${currentPage + 1}.html">下一页 »</a> `;
-      html += `<a href="page${totalPages}.html">尾页（第11页）</a>`;
+      html += `<a href="page${totalPages}.html">尾页</a>`;
     }
 
     // 跳转输入框
     html += `
       <br/><br/>
       <div class="goto-container">
-        <label for="gotoPage">跳转到第</label>
+        <label for="gotoPage">共11页，跳转到第</label>
         <input id="gotoPage" type="number" min="1" max="${totalPages}" value="${currentPage}">
         <span>页</span>
         <button onclick="gotoPage()">跳转</button>

@@ -149,6 +149,16 @@ CuteNew
 
 
 
+<a href="pages/Page16f68a5a-0a27-4739-af37-5fe3bf2627f3.html" class="gallery-item">
+  <img src="images_preview/16f68a5a-0a27-4739-af37-5fe3bf2627f3.jpg" alt="图片187">
+  <div class="caption tags">
+  <span class="tag tag1">2024.9.22</span>
+  <span class="tag tag2">HGH</span>
+  <span class="tag tag3">ZHO</span>
+</div>
+
+</a>
+
 <a href="pages/Page8d60e3e7-3aa3-4707-bb12-131aba9d6ce9.html" class="gallery-item">
   <img src="images_preview/8d60e3e7-3aa3-4707-bb12-131aba9d6ce9.jpg" alt="图片186">
   <div class="caption tags">
@@ -419,16 +429,6 @@ CuteNew
 
 </a>
 
-<a href="pages/Page85b97f48-70c8-4c21-940b-7f793e9310db.html" class="gallery-item">
-  <img src="images_preview/85b97f48-70c8-4c21-940b-7f793e9310db.jpg" alt="图片159">
-  <div class="caption tags">
-  <span class="tag tag1">2023.12.16</span>
-  <span class="tag tag2">HKG</span>
-  <span class="tag tag3">Suzuna</span>
-</div>
-
-</a>
-
 
 
 
@@ -467,14 +467,14 @@ CuteNew
     // 下一页 + 尾页
     if (currentPage < totalPages) {
       html += `<a href="page${currentPage + 1}.html">下一页 »</a> `;
-      html += `<a href="page${totalPages}.html">尾页（第11页）</a>`;
+      html += `<a href="page${totalPages}.html">尾页</a>`;
     }
 
     // 跳转输入框
     html += `
       <br/><br/>
       <div class="goto-container">
-        <label for="gotoPage">跳转到第</label>
+        <label for="gotoPage">共11页，跳转到第</label>
         <input id="gotoPage" type="number" min="1" max="${totalPages}" value="${currentPage}">
         <span>页</span>
         <button onclick="gotoPage()">跳转</button>
