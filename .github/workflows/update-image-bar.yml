@@ -1,0 +1,41 @@
+name: Update Image Bars
+
+on:
+  workflow_dispatch:
+
+jobs:
+  update-bars:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        persist-credentials: true  # 为了推送回仓库
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        pip install pillow
+        pip install wython
+
+    - name: Install Chinese font (Source Han Sans)
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y fonts-noto-cjk
+
+    - name: Run update_bar.py
+      run: |
+        python update_bar.py
+
+    - name: Commit and push changes
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add docs/images/*.jpg
+        git commit -m "Auto update image bars from workflow" || echo "No changes to commit"
+        git push
