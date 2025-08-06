@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>图片展示 - CuteNew Gallery</title>
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background-color: #000;
+      color: white;
+    }
+
+    header {
+      background-color: #122344;
+      color: white;
+      text-align: center;
+      padding: 1em;
+      font-size: 1.5em;
+    }
+
+    header img {
+      height: 1.2em;
+      vertical-align: middle;
+      margin-right: 0.5em;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2vh;
+      box-sizing: border-box;
+    }
+
+    .image-wrapper {
+      max-width: 90%;
+      max-height: 80vh;
+      background-color: #000;
+      padding: 1em;
+      box-shadow: 0 0 10px rgba(255,255,255,0.1);
+    }
+
+    .image-wrapper img {
+      width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      border-radius: 8px;
+    }
+
+    .caption {
+      text-align: center;
+      margin-top: 1em;
+      font-size: 1em;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="../logo.png" alt="CuteNew Logo"> 图片展示 - CuteNew Gallery
+  </header>
+  <main class="container">
+    <div class="image-wrapper">
+      <img src="../images/a49cdf62-4c8d-49c3-bc8e-99872aa220be.jpg" alt="展示图片">
+      <div class="caption">2025.2.2 · LHR · SKDD</div>
+    </div>
+  </main>
+  <br/><br/>
+</body>
+</html>
