@@ -394,8 +394,8 @@ def count_image_log_rows():
             reader = csv.reader(file)
             # 跳过表头
             next(reader, None)
-            # 计数非表头行
-            row_count = sum(1 for row in reader)
+            # 计数非空行（过滤空行）
+            row_count = sum(1 for row in reader if len(row) > 0)
             return row_count
     except FileNotFoundError:
         print("文件 './docs/images/image_log.csv' 未找到")
