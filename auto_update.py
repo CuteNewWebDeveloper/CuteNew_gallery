@@ -616,8 +616,43 @@ CuteNew
 
 
 
-
 <div class="pagination" style="text-align: center; margin: 40px 0;">
+  <style>
+    .pagination a, .pagination span {
+      display: inline-block;
+      padding: 6px 10px;
+      margin: 0 3px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      text-decoration: none;
+      color: #333;
+      font-size: 14px;
+      min-width: 30px;
+      text-align: center;
+    }
+    .pagination a:hover {
+      background-color: #f0f0f0;
+    }
+    .pagination span.current {
+      background-color: #e0e0e0;
+      font-weight: bold;
+      color: gray;
+      cursor: default;
+    }
+    .goto-container {
+      margin-top: 15px;
+    }
+    .goto-container input {
+      width: 50px;
+      padding: 4px;
+      text-align: center;
+    }
+    .goto-container button {
+      padding: 4px 8px;
+      margin-left: 5px;
+    }
+  </style>
+
   <script>
     const currentPage = **replace_me_as_Current_pages********; // 当前页码
     const totalPages = **replace_me_as_totalPages********; // 总页数
@@ -626,44 +661,41 @@ CuteNew
 
     // 首页 + 上一页
     if (currentPage > 1) {
-      html += `<a href="${currentPage === 2 ? 'index.html' : 'page' + (currentPage - 1) + '.html'}">« 上一页</a> `;
-      html += `<a href="index.html">首页</a> `;
+      html += `<a href="${currentPage === 2 ? 'index.html' : 'page' + (currentPage - 1) + '.html'}">« 上一页</a>`;
+      html += `<a href="index.html">首页</a>`;
     }
 
     // 前置页码
     for (let i = Math.max(1, currentPage - range); i < currentPage; i++) {
-      html += `<a href="${i === 1 ? 'index.html' : 'page' + i + '.html'}">${i}</a> `;
+      html += `<a href="${i === 1 ? 'index.html' : 'page' + i + '.html'}">${i}</a>`;
     }
 
     // 当前页高亮
-    html += `<span style="margin: 0 8px; font-weight: bold; color: gray;">${currentPage}</span>`;
+    html += `<span class="current">${currentPage}</span>`;
 
     // 后置页码
     for (let i = currentPage + 1; i <= Math.min(totalPages, currentPage + range); i++) {
-      html += `<a href="page${i}.html">${i}</a> `;
+      html += `<a href="page${i}.html">${i}</a>`;
     }
 
     // 下一页 + 尾页
     if (currentPage < totalPages) {
-      html += `<a href="page${currentPage + 1}.html">下一页 »</a> `;
+      html += `<a href="page${currentPage + 1}.html">下一页 »</a>`;
       html += `<a href="page${totalPages}.html">尾页</a>`;
     }
 
     // 跳转输入框
     html += `
-      <br/><br/>
       <div class="goto-container">
-        <label for="gotoPage">共**replace_me_as_totalPages********页，跳转到第</label>
+        <label for="gotoPage">共${totalPages}页，跳转到第</label>
         <input id="gotoPage" type="number" min="1" max="${totalPages}" value="${currentPage}">
         <span>页</span>
         <button onclick="gotoPage()">跳转</button>
       </div>
     `;
 
-    // 写入到页面中
     document.write(html);
 
-    // 跳转函数
     function gotoPage() {
       const page = parseInt(document.getElementById('gotoPage').value);
       if (isNaN(page) || page < 1 || page > totalPages) {
@@ -674,6 +706,7 @@ CuteNew
     }
   </script>
 </div>
+
 
 
   
