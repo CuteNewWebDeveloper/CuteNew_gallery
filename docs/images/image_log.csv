@@ -104,11 +104,7 @@ image_id,image_name,time,location,photographer_name,note
 103,0c6c05b9-4d7a-4a53-afdc-3d53cfe883d0.jpg,2025.6.23,CAN,21200221,
 104,f9dd10f8-58df-472a-90b0-d78c8318040f.jpg,2025.7.5,PEK,jiananlan,
 105,1cf4bd69-036b-4abe-b504-bf670fbd8ffa.jpg,2025.7.9,PVG,Eliauk,
-106,22a26fe3-1a95-44e8-a937-a2c32848833a.jpg,2025.unknown,MUC,test for multiple name,
-107,2ada7db8-8437-4bc4-8e37-88f1716cd84b.jpg,2025.4.30,CSX,Jiananlan,
 108,46724453-3a8f-4abd-bf7e-beb5110b4df4.jpg,2025.2.5,PEK,jiananlan,
-109,1edee581-f2cb-4b46-9051-25d1636dcdf7.jpg,2025.7.23,MUC,测试中文,
-110,cfd356d5-3baa-4ec6-8fc1-2738d843fdee.jpg,2025.7.5,PEK,测试中文,
 111,a1d25b94-2e39-4aad-a85f-cfc240b55a09.jpg,2023.9.30,HGH,Zzl,
 112,ec59c31d-398a-419f-8fd6-6334596995dc.jpg,2024.7.9,PAE,RoMANTiC PEK,
 113,5d5de91f-dc39-49d4-b9ec-d93975d3c24a.jpg,2024.7.29,HGH,ZSHC Sky,
@@ -301,3 +297,4 @@ image_id,image_name,time,location,photographer_name,note
 300,9f39aa16-265f-464f-92d9-5be45f327739.jpg,2025.7.5,PEK,jiananlan,
 301,1b3b0e17-d9e0-4a08-aa59-7b0af38410a3.jpg,2025.7.23,MUC,jiananlan,
 302,6602a800-8f4e-4506-8339-6593779b3c28.jpg,2025.7.23,MUC,jiananlan,
+
