@@ -407,20 +407,24 @@ def count_image_log_rows():
 
 def get_nth_row_content(n):
     try:
+        print("尝试打开文件 './docs/images/image_log.csv'...")
         with open('./docs/images/image_log.csv', 'r', newline='') as file:
+            print("文件打开成功，开始读取内容...")
             reader = csv.reader(file)
             # 跳过表头
-            next(reader, None)
-            # 将所有行读入列表
+            header = next(reader, None)
+            print(f"表头内容: {header}")
             rows = list(reader)
-            # 计算总行数
             total_rows = len(rows)
-            # 检查 n 是否有效
+            print(f"读取到有效数据行数（不含表头）: {total_rows}")
+            
             if n <= 0 or n > total_rows:
                 print(f"无效的行号 {n}，文件有效行数为 {total_rows}")
                 return None
-            # 返回倒数第 n 行
-            return rows[total_rows - n]
+            
+            target_row = rows[total_rows - n]
+            print(f"返回倒数第 {n} 行内容: {target_row}")
+            return target_row
     except FileNotFoundError:
         print("文件 './docs/images/image_log.csv' 未找到")
         return None
