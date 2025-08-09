@@ -617,7 +617,8 @@ CuteNew
 
 <div class="pagination" style="text-align: center; margin: 40px 0;">
   <style>
-    .pagination a, .pagination span {
+    /* 专门给页码按钮的样式 */
+    .pagination .page-btn {
       display: inline-block;
       padding: 6px 10px;
       margin: 0 3px;
@@ -629,10 +630,10 @@ CuteNew
       min-width: 30px;
       text-align: center;
     }
-    .pagination a:hover {
+    .pagination a.page-btn:hover {
       background-color: #f0f0f0;
     }
-    .pagination span.current {
+    .pagination .page-btn.current {
       background-color: #004a99;
       font-weight: bold;
       color: white;
@@ -659,9 +660,9 @@ CuteNew
 
     function addPageLink(page) {
       if (page === currentPage) {
-        html += `<span class="current">${page}</span>`;
+        html += `<span class="page-btn current">${page}</span>`;
       } else {
-        html += `<a href="${page === 1 ? 'index.html' : 'page' + page + '.html'}">${page}</a>`;
+        html += `<a class="page-btn" href="${page === 1 ? 'index.html' : 'page' + page + '.html'}">${page}</a>`;
       }
     }
 
@@ -690,7 +691,7 @@ CuteNew
       addPageLink(totalPages);
     }
 
-    // 跳转输入框
+    // 跳转输入框（"页" 不加按钮样式）
     html += `
     <br>
       <div class="goto-container">
@@ -713,6 +714,7 @@ CuteNew
     }
   </script>
 </div>
+
 
 
 
