@@ -149,6 +149,16 @@ CuteNew
 
 
 
+<a href="pages/Page1cf4bd69-036b-4abe-b504-bf670fbd8ffa.html" class="gallery-item">
+  <img src="images_preview/1cf4bd69-036b-4abe-b504-bf670fbd8ffa.jpg" alt="图片105">
+  <div class="caption tags">
+  <span class="tag tag1">2025.7.9</span>
+  <span class="tag tag2">PVG</span>
+  <span class="tag tag3">Eliauk</span>
+</div>
+
+</a>
+
 <a href="pages/Pagef9dd10f8-58df-472a-90b0-d78c8318040f.html" class="gallery-item">
   <img src="images_preview/f9dd10f8-58df-472a-90b0-d78c8318040f.jpg" alt="图片104">
   <div class="caption tags">
@@ -419,16 +429,6 @@ CuteNew
 
 </a>
 
-<a href="pages/Page0209b73d-45ba-4403-9668-3ee8d2850af3.html" class="gallery-item">
-  <img src="images_preview/0209b73d-45ba-4403-9668-3ee8d2850af3.jpg" alt="图片77">
-  <div class="caption tags">
-  <span class="tag tag1">2022.8.14</span>
-  <span class="tag tag2">CAN</span>
-  <span class="tag tag3">SWZ</span>
-</div>
-
-</a>
-
 
 
 
@@ -455,9 +455,9 @@ CuteNew
       background-color: #f0f0f0;
     }
     .pagination span.current {
-      background-color: #e0e0e0;
+      background-color: #004a99;
       font-weight: bold;
-      color: gray;
+      color: white;
       cursor: default;
     }
     .goto-container {
@@ -477,32 +477,39 @@ CuteNew
   <script>
     const currentPage = 8; // 当前页码
     const totalPages = 11; // 总页数
-    const range = 2; // 当前页前后展示的页数范围
     let html = '';
 
-    // 首页 + 上一页
-    if (currentPage > 1) {
-      html += `<a href="${currentPage === 2 ? 'index.html' : 'page' + (currentPage - 1) + '.html'}">« 上一页</a>`;
-      html += `<a href="index.html">首页</a>`;
+    function addPageLink(page) {
+      if (page === currentPage) {
+        html += `<span class="current">${page}</span>`;
+      } else {
+        html += `<a href="${page === 1 ? 'index.html' : 'page' + page + '.html'}">${page}</a>`;
+      }
     }
 
-    // 前置页码
-    for (let i = Math.max(1, currentPage - range); i < currentPage; i++) {
-      html += `<a href="${i === 1 ? 'index.html' : 'page' + i + '.html'}">${i}</a>`;
+    // 第一页
+    addPageLink(1);
+
+    // 左侧省略号
+    if (currentPage > 4) {
+      html += `<span>...</span>`;
     }
 
-    // 当前页高亮
-    html += `<span class="current">${currentPage}</span>`;
-
-    // 后置页码
-    for (let i = currentPage + 1; i <= Math.min(totalPages, currentPage + range); i++) {
-      html += `<a href="page${i}.html">${i}</a>`;
+    // 中间页码范围
+    const start = Math.max(2, currentPage - 3);
+    const end = Math.min(totalPages - 1, currentPage + 3);
+    for (let i = start; i <= end; i++) {
+      addPageLink(i);
     }
 
-    // 下一页 + 尾页
-    if (currentPage < totalPages) {
-      html += `<a href="page${currentPage + 1}.html">下一页 »</a>`;
-      html += `<a href="page${totalPages}.html">尾页</a>`;
+    // 右侧省略号
+    if (currentPage < totalPages - 3) {
+      html += `<span>...</span>`;
+    }
+
+    // 最后一页
+    if (totalPages > 1) {
+      addPageLink(totalPages);
     }
 
     // 跳转输入框
@@ -530,7 +537,8 @@ CuteNew
 
 
 
-  
+
+
 
   
 </body>
