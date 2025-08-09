@@ -149,6 +149,16 @@ CuteNew
 
 
 
+<a href="pages/Page365a1c03-6426-49c4-a12b-4e7ea9cdf8ed.html" class="gallery-item">
+  <img src="images_preview/365a1c03-6426-49c4-a12b-4e7ea9cdf8ed.jpg" alt="图片218">
+  <div class="caption tags">
+  <span class="tag tag1">2023.6.25</span>
+  <span class="tag tag2">TSN</span>
+  <span class="tag tag3">ZBTJ_Yan</span>
+</div>
+
+</a>
+
 <a href="pages/Page044e5773-7dbd-4e58-800f-f6615e6979c3.html" class="gallery-item">
   <img src="images_preview/044e5773-7dbd-4e58-800f-f6615e6979c3.jpg" alt="图片217">
   <div class="caption tags">
@@ -419,16 +429,6 @@ CuteNew
 
 </a>
 
-<a href="pages/Page0daf2ea8-9b4b-4d7b-b63c-031dbe8b2510.html" class="gallery-item">
-  <img src="images_preview/0daf2ea8-9b4b-4d7b-b63c-031dbe8b2510.jpg" alt="图片190">
-  <div class="caption tags">
-  <span class="tag tag1">2024.11.16</span>
-  <span class="tag tag2">ZUH</span>
-  <span class="tag tag3">陈骆驼</span>
-</div>
-
-</a>
-
 
 
 
@@ -436,41 +436,38 @@ CuteNew
 
 
 
-
 <div class="pagination" style="text-align: center; margin: 40px 0;">
   <style>
-    .pagination a, .pagination span {
+    .pagination a, .pagination span, .pagination button {
       display: inline-block;
       padding: 6px 10px;
       margin: 0 3px;
-      border: 1px solid #ccc;
+      border: 1px solid #122344;
       border-radius: 4px;
       text-decoration: none;
-      color: #333;
+      background-color: #122344;
+      color: white;
       font-size: 14px;
       min-width: 30px;
       text-align: center;
+      cursor: pointer;
     }
-    .pagination a:hover {
-      background-color: #f0f0f0;
+    .pagination a:hover, .pagination button:hover {
+      background-color: #1a2f66;
     }
     .pagination span.current {
-      background-color: #004a99;
       font-weight: bold;
-      color: white;
       cursor: default;
     }
     .goto-container {
-      margin-top: 15px;
+      display: inline-block;
+      margin-left: 15px;
     }
     .goto-container input {
       width: 50px;
       padding: 4px;
       text-align: center;
-    }
-    .goto-container button {
-      padding: 4px 8px;
-      margin-left: 5px;
+      margin: 0 5px;
     }
   </style>
 
@@ -491,19 +488,19 @@ CuteNew
     addPageLink(1);
 
     // 左侧省略号
-    if (currentPage > 4) {
+    if (currentPage > 3) {
       html += `<span>...</span>`;
     }
 
-    // 中间页码范围
-    const start = Math.max(2, currentPage - 3);
-    const end = Math.min(totalPages - 1, currentPage + 3);
+    // 中间页码范围 i-2 到 i+2
+    const start = Math.max(2, currentPage - 2);
+    const end = Math.min(totalPages - 1, currentPage + 2);
     for (let i = start; i <= end; i++) {
       addPageLink(i);
     }
 
     // 右侧省略号
-    if (currentPage < totalPages - 3) {
+    if (currentPage < totalPages - 2) {
       html += `<span>...</span>`;
     }
 
@@ -512,14 +509,14 @@ CuteNew
       addPageLink(totalPages);
     }
 
-    // 跳转输入框
+    // 跳转输入框（与分页按钮同行）
     html += `
-      <div class="goto-container">
-        <label for="gotoPage">共${totalPages}页，跳转到第</label>
+      <span class="goto-container">
+        <label for="gotoPage" style="color:black; background:none; border:none; padding:0; margin:0;">共${totalPages}页，跳转到第</label>
         <input id="gotoPage" type="number" min="1" max="${totalPages}" value="${currentPage}">
-        <span>页</span>
+        <span style="color:black; background:none; border:none; padding:0; margin:0;">页</span>
         <button onclick="gotoPage()">跳转</button>
-      </div>
+      </span>
     `;
 
     document.write(html);
@@ -534,6 +531,8 @@ CuteNew
     }
   </script>
 </div>
+
+
 
 
 
