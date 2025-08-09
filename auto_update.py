@@ -601,13 +601,93 @@ header {
   }
 
   </style>
-</head>
-<body>
-  <header>
-    <img src="logo.png" alt="CuteNew Logo" style="height: 1.2em; vertical-align: middle;">  欢迎来到
-CuteNew
-    Gallery
-  </header>
+
+
+
+
+<header>
+  <img src="logo.png" alt="CuteNew Logo" style="height: 1.2em; vertical-align: middle;">
+  欢迎来到 CuteNew Gallery
+
+  <button class="header-btn" title="Our Button">
+    <span class="btn-text">our</span>
+    <img src="jp.ico" alt="icon" class="btn-icon">
+  </button>
+</header>
+
+<style>
+  header {
+    position: fixed;
+    top: 0; left: 0; width: 100%;
+    z-index: 1000;
+
+    background-color: #122344;
+    color: white;
+    text-align: center;
+    padding: 1em 1.5em;  /* 左右留点空 */
+    font-size: 1.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1em;
+  }
+
+  /* 让 header 内部内容左右分布 */
+  header {
+    justify-content: center; /* 默认居中 */
+    position: fixed;
+  }
+  header > img, 
+  header > span, 
+  header > button {
+    flex-shrink: 0;
+  }
+  /* 让按钮固定在右侧 */
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    display: flex;
+    align-items: center;
+    padding: 1em 1.5em;
+  }
+  header > img {
+    height: 1.2em;
+  }
+  header > .header-text {
+    flex-grow: 1;
+    color: white;
+    font-size: 1.5em;
+    text-align: center;
+  }
+  /* 按钮样式 */
+  .header-btn {
+    background-color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 0.3em 0.8em;
+    gap: 0.4em;
+  }
+  .header-btn .btn-text {
+    color: black;
+    font-weight: bold;
+    font-size: 1em;
+  }
+  .header-btn .btn-icon {
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+  }
+</style>
+
+
+
+
+
+
+
   <main class="gallery">
 
 
