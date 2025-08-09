@@ -634,9 +634,9 @@ CuteNew
       background-color: #f0f0f0;
     }
     .pagination span.current {
-      background-color: #e0e0e0;
+      background-color: #004a99;
       font-weight: bold;
-      color: gray;
+      color: white;
       cursor: default;
     }
     .goto-container {
@@ -656,32 +656,39 @@ CuteNew
   <script>
     const currentPage = **replace_me_as_Current_pages********; // 当前页码
     const totalPages = **replace_me_as_totalPages********; // 总页数
-    const range = 2; // 当前页前后展示的页数范围
     let html = '';
 
-    // 首页 + 上一页
-    if (currentPage > 1) {
-      html += `<a href="${currentPage === 2 ? 'index.html' : 'page' + (currentPage - 1) + '.html'}">« 上一页</a>`;
-      html += `<a href="index.html">首页</a>`;
+    function addPageLink(page) {
+      if (page === currentPage) {
+        html += `<span class="current">${page}</span>`;
+      } else {
+        html += `<a href="${page === 1 ? 'index.html' : 'page' + page + '.html'}">${page}</a>`;
+      }
     }
 
-    // 前置页码
-    for (let i = Math.max(1, currentPage - range); i < currentPage; i++) {
-      html += `<a href="${i === 1 ? 'index.html' : 'page' + i + '.html'}">${i}</a>`;
+    // 第一页
+    addPageLink(1);
+
+    // 左侧省略号
+    if (currentPage > 4) {
+      html += `<span>...</span>`;
     }
 
-    // 当前页高亮
-    html += `<span class="current">${currentPage}</span>`;
-
-    // 后置页码
-    for (let i = currentPage + 1; i <= Math.min(totalPages, currentPage + range); i++) {
-      html += `<a href="page${i}.html">${i}</a>`;
+    // 中间页码范围
+    const start = Math.max(2, currentPage - 3);
+    const end = Math.min(totalPages - 1, currentPage + 3);
+    for (let i = start; i <= end; i++) {
+      addPageLink(i);
     }
 
-    // 下一页 + 尾页
-    if (currentPage < totalPages) {
-      html += `<a href="page${currentPage + 1}.html">下一页 »</a>`;
-      html += `<a href="page${totalPages}.html">尾页</a>`;
+    // 右侧省略号
+    if (currentPage < totalPages - 3) {
+      html += `<span>...</span>`;
+    }
+
+    // 最后一页
+    if (totalPages > 1) {
+      addPageLink(totalPages);
     }
 
     // 跳转输入框
@@ -709,7 +716,8 @@ CuteNew
 
 
 
-  
+
+
 
   
 </body>
