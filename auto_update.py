@@ -411,12 +411,13 @@ def get_nth_row_content(n):
         with open('./docs/images/image_log.csv', 'r', newline='') as file:
             print("文件打开成功，开始读取内容...")
             reader = csv.reader(file)
-            # 跳过表头
             header = next(reader, None)
             print(f"表头内容: {header}")
-            rows = list(reader)
+            
+            # 过滤空行
+            rows = [row for row in reader if len(row) > 0]
             total_rows = len(rows)
-            print(f"读取到有效数据行数（不含表头）: {total_rows}")
+            print(f"过滤空行后，有效数据行数: {total_rows}")
             
             if n <= 0 or n > total_rows:
                 print(f"无效的行号 {n}，文件有效行数为 {total_rows}")
