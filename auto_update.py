@@ -470,14 +470,21 @@ def main():
       margin: 0;
       font-family: sans-serif;
       background-color: #f5f5f5;
+       padding-top: 80px; 
     }
-    header {
-      background-color: #122344;
-      color: white;
-      text-align: center;
-      padding: 1em;
-      font-size: 1.5em;
-    }
+header {
+  position: fixed;     /* 固定在页面上 */
+  top: 0;              /* 距离页面顶部 0 */
+  left: 0;             /* 从左边开始 */
+  width: 100%;         /* 占满宽度 */
+  z-index: 1000;       /* 确保盖在其他内容之上 */
+  
+  background-color: #122344;
+  color: white;
+  text-align: center;
+  padding: 1em;
+  font-size: 1.5em;
+}
     .gallery {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
