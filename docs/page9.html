@@ -438,36 +438,38 @@ CuteNew
 
 <div class="pagination" style="text-align: center; margin: 40px 0;">
   <style>
-    .pagination a, .pagination span, .pagination button {
+    .pagination a, .pagination span {
       display: inline-block;
       padding: 6px 10px;
       margin: 0 3px;
-      border: 1px solid #122344;
+      border: 1px solid #ccc;
       border-radius: 4px;
       text-decoration: none;
-      background-color: #122344;
-      color: white;
+      color: #333;
       font-size: 14px;
       min-width: 30px;
       text-align: center;
-      cursor: pointer;
     }
-    .pagination a:hover, .pagination button:hover {
-      background-color: #1a2f66;
+    .pagination a:hover {
+      background-color: #f0f0f0;
     }
     .pagination span.current {
+      background-color: #004a99;
       font-weight: bold;
+      color: white;
       cursor: default;
     }
     .goto-container {
-      display: inline-block;
-      margin-left: 15px;
+      margin-top: 15px;
     }
     .goto-container input {
       width: 50px;
       padding: 4px;
       text-align: center;
-      margin: 0 5px;
+    }
+    .goto-container button {
+      padding: 4px 8px;
+      margin-left: 5px;
     }
   </style>
 
@@ -487,20 +489,20 @@ CuteNew
     // 第一页
     addPageLink(1);
 
-    // 左侧省略号
-    if (currentPage > 3) {
+    // 左省略号
+    if (currentPage > 4) {
       html += `<span>...</span>`;
     }
 
-    // 中间页码范围 i-2 到 i+2
+    // 中间页码范围（i-2 到 i+2）
     const start = Math.max(2, currentPage - 2);
     const end = Math.min(totalPages - 1, currentPage + 2);
     for (let i = start; i <= end; i++) {
       addPageLink(i);
     }
 
-    // 右侧省略号
-    if (currentPage < totalPages - 2) {
+    // 右省略号
+    if (currentPage < totalPages - 3) {
       html += `<span>...</span>`;
     }
 
@@ -509,14 +511,14 @@ CuteNew
       addPageLink(totalPages);
     }
 
-    // 跳转输入框（与分页按钮同行）
+    // 跳转输入框
     html += `
-      <span class="goto-container">
-        <label for="gotoPage" style="color:black; background:none; border:none; padding:0; margin:0;">共${totalPages}页，跳转到第</label>
+      <div class="goto-container">
+        <label for="gotoPage">共${totalPages}页，跳转到第</label>
         <input id="gotoPage" type="number" min="1" max="${totalPages}" value="${currentPage}">
-        <span style="color:black; background:none; border:none; padding:0; margin:0;">页</span>
+        <span>页</span>
         <button onclick="gotoPage()">跳转</button>
-      </span>
+      </div>
     `;
 
     document.write(html);
@@ -531,6 +533,7 @@ CuteNew
     }
   </script>
 </div>
+
 
 
 
