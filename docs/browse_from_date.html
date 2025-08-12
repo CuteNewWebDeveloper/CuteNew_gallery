@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>按日期浏览</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+        background-color: #f5f5f5;
+    }
+    header {
+        background-color: #122344;
+        color: white;
+        padding: 1em;
+        font-size: 1.5em;
+    }
+    .calendar {
+        display: inline-block;
+        margin-top: 20px;
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    .calendar-header button {
+        background-color: #122344;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+        border-radius: 6px;
+    }
+    .calendar-header button:hover {
+        background-color: #1e3560;
+    }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    th {
+        padding: 5px;
+        background-color: #f0f0f0;
+    }
+    td {
+        width: 14.28%;
+        height: 80px;
+        text-align: center;
+        vertical-align: middle;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: background-color 0.3s;
+    }
+    td:hover {
+        background-color: #e0e0e0;
+    }
+</style>
+</head>
+<body>
+
+<header>按日期浏览</header>
+
+<div class="calendar">
+    <div class="calendar-header">
+        <button id="prevYear">« 年</button>
+        <button id="prevMonth">« 月</button>
+        <span id="monthYear"></span>
+        <button id="nextMonth">月 »</button>
+        <button id="nextYear">年 »</button>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>日</th>
+                <th>一</th>
+                <th>二</th>
+                <th>三</th>
+                <th>四</th>
+                <th>五</th>
+                <th>六</th>
+            </tr>
+        </thead>
+        <tbody id="calendar-body">
+        </tbody>
+    </table>
+</div>
+
+<script>
+let currentYear, currentMonth;
+let dateData = {}; // { "YYYY-MM-DD": count }
+
+document.addEventListener("DOMContentLoaded", () => {
+    const today = new Date();
+    currentYear = today.getFullYear();
+    currentMonth = today.getMonth();
+
+    loadCSV('./datedata.csv').then(() => {
+        renderCalendar(currentYear, currentMonth);
+    });
+
+    document.getElementById("prevMonth").addEventListener("click", () => changeMonth(-1));
+    document.getElementById("nextMonth").addEventListener("click", () => changeMonth(1));
+    document.getElementById("prevYear").addEventListener("click", () => changeYear(-1));
+    document.getElementById("nextYear").addEventListener("click", () => changeYear(1));
+});
+
+function changeMonth(offset) {
+    currentMonth += offset;
+    if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
+    } else if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+    }
+    renderCalendar(currentYear, currentMonth);
+}
+
+function changeYear(offset) {
+    currentYear += offset;
+    renderCalendar(currentYear, currentMonth);
+}
+
+async function loadCSV(url) {
+    const res = await fetch(url);
+    const text = await res.text();
+    const lines = text.trim().split('\n');
+    lines.shift(); // 去掉表头
+    for (let line of lines) {
+        let [date, count] = line.split(',');
+        dateData[date] = parseInt(count, 10);
+    }
+}
+
+function renderCalendar(year, month) {
+    const monthYear = document.getElementById("monthYear");
+    monthYear.textContent = `${year}年 ${month+1}月`;
+
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month+1, 0).getDate();
+
+    const prevMonthDays = new Date(year, month, 0).getDate();
+
+    let html = "";
+    let day = 1;
+    let nextMonthDay = 1;
+
+    for (let i = 0; i < 6; i++) { // 最多 6 行
+        let row = "<tr>";
+        for (let j = 0; j < 7; j++) {
+            let cellDate;
+            let cellHTML = "";
+            let isCurrentMonth = true;
+
+            if (i === 0 && j < firstDay) {
+                // 上个月的日期
+                cellDate = new Date(year, month-1, prevMonthDays - firstDay + j + 1);
+                isCurrentMonth = false;
+            } else if (day > daysInMonth) {
+                // 下个月的日期
+                cellDate = new Date(year, month+1, nextMonthDay++);
+                isCurrentMonth = false;
+            } else {
+                // 当前月
+                cellDate = new Date(year, month, day++);
+            }
+
+            const dateStr = cellDate.toISOString().split('T')[0];
+            let bgColor = "";
+            if (isCurrentMonth && dateData[dateStr]) {
+                bgColor = getGradientColor("#ffffff", "#122344", Math.min(dateData[dateStr] / 10, 1));
+            }
+
+            cellHTML = `<td style="background:${bgColor}" onclick="goToDate('${dateStr}')">${cellDate.getDate()}</td>`;
+            row += cellHTML;
+        }
+        row += "</tr>";
+        html += row;
+    }
+
+    document.getElementById("calendar-body").innerHTML = html;
+}
+
+function getGradientColor(startColor, endColor, factor) {
+    let sc = hexToRgb(startColor);
+    let ec = hexToRgb(endColor);
+    let r = Math.round(sc.r + factor * (ec.r - sc.r));
+    let g = Math.round(sc.g + factor * (ec.g - sc.g));
+    let b = Math.round(sc.b + factor * (ec.b - sc.b));
+    return `rgb(${r},${g},${b})`;
+}
+
+function hexToRgb(hex) {
+    hex = hex.replace('#', '');
+    if (hex.length === 3) hex = hex.split('').map(c => c+c).join('');
+    let bigint = parseInt(hex, 16);
+    return { r: (bigint >> 16) & 255, g: (bigint >> 8) & 255, b: bigint & 255 };
+}
+
+function goToDate(dateStr) {
+    window.location.href = `photos.html?date=${dateStr}`;
+}
+</script>
+
+</body>
+</html>
