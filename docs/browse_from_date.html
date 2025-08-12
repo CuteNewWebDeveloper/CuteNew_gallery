@@ -89,9 +89,16 @@
     font-size: 1.3em;
     user-select: none;
   }
-  td:hover {
+  td:hover:not(.disabled) {
     background-color: #e0e0e0 !important;
     color: black !important;
+  }
+
+  /* 禁用样式 */
+  td.disabled {
+    background-color: #ddd !important;
+    color: #999 !important;
+    cursor: default !important;
   }
 </style>
 </head>
@@ -202,14 +209,30 @@
         const dateStr = cellDate.toISOString().split("T")[0];
         let bgColor = "";
         let fontColor = "black";
+        let disabledClass = "";
 
-        if (isCurrentMonth && dateData[dateStr]) {
-          let factor = Math.min(dateData[dateStr] / 10, 1);
-          bgColor = getGradientColor("#ffffff", "#122344", factor);
-          fontColor = getFontColor(factor);
+        if (isCurrentMonth) {
+          const count = dateData[dateStr] || 0;
+          if (count > 0) {
+            let factor = Math.min(count / 10, 1);
+            bgColor = getGradientColor("#ffffff", "#122344", factor);
+            fontColor = getFontColor(factor);
+          } else {
+            // 无图片或0张，禁用
+            disabledClass = "disabled";
+            bgColor = "#ddd";
+            fontColor = "#999";
+          }
+        } else {
+          // 非当前月显示淡灰，禁用
+          disabledClass = "disabled";
+          bgColor = "#f9f9f9";
+          fontColor = "#bbb";
         }
 
-        row += `<td style="background:${bgColor}; color:${fontColor}" onclick="goToDate('${dateStr}')" title="查看${dateStr}照片">${cellDate.getDate()}</td>`;
+        row += `<td class="${disabledClass}" style="background:${bgColor};color:${fontColor}"` +
+               (disabledClass ? "" : ` onclick="goToDate('${dateStr}')" title="查看${dateStr}照片"`) +
+               `>${cellDate.getDate()}</td>`;
       }
       row += "</tr>";
       html += row;
@@ -242,7 +265,6 @@
   }
 
   function goToDate(dateStr) {
-    // 点击日期跳转，可根据需求修改URL
     window.location.href = `photos.html?date=${dateStr}`;
   }
 </script>
