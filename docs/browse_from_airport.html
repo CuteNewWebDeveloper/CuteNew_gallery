@@ -1,157 +1,158 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<title>CuteNew Gallery - 机场代码</title>
-<style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
-    padding-top: 80px;
-  }
-  header {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%;
-    z-index: 1000;
-    background-color: #122344;
-    color: white;
-    text-align: center;
-    padding: 1em;
-    font-size: 1.5em;
-  }
-  header img {
-    height: 1.2em;
-    vertical-align: middle;
-    margin-right: 0.4em;
-  }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CuteNew Gallery</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
 
-  /* 字母分组标题 */
-  .letter-section {
-    margin: 20px auto;
-    max-width: 1000px;
-    padding: 0 1em;
-  }
-  .letter-section h2 {
-    color: #122344;
-    font-size: 1.8em;
-    border-bottom: 2px solid #ccc;
-    padding-bottom: 5px;
-  }
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background-color: #f5f5f5;
+      padding-top: 80px; /* 给固定 header 留空 */
+    }
 
-  /* 机场代码按钮 + 描述 */
-  .airport-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 10px;
-    margin-top: 15px;
-  }
-  .airport-item {
-    background: white;
-    border-radius: 8px;
-    text-align: center;
-    padding: 8px;
-    transition: background 0.3s;
-  }
-  .airport-item:hover {
-    background: #e0e6f8;
-  }
-  .airport-item a {
-    display: block;
-    text-decoration: none;
-    color: #122344;
-    font-weight: bold;
-  }
-  .airport-desc {
-    font-size: 0.8em;
-    color: #666;
-    margin-top: 4px;
-    line-height: 1.2em;
-  }
-</style>
+    /* 固定头部 - 保持你原版样式 */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      background-color: #122344;
+      color: white;
+      text-align: center;
+      padding: 1em;
+      font-size: 1.5em;
+    }
+
+    /* 字母分组标题 */
+    .letter-section {
+      margin: 20px auto;
+      max-width: 1000px;
+      padding: 0 1em;
+    }
+    .letter-section h2 {
+      color: #122344;
+      font-size: 1.8em;
+      border-bottom: 2px solid #ccc;
+      padding-bottom: 5px;
+    }
+
+    /* 机场代码按钮 + 描述 */
+    .airport-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 10px;
+      margin-top: 15px;
+    }
+    .airport-item {
+      background: white;
+      border-radius: 8px;
+      text-align: center;
+      padding: 8px;
+      transition: background 0.3s;
+    }
+    .airport-item:hover {
+      background: #e0e6f8;
+    }
+    .airport-item a {
+      display: block;
+      text-decoration: none;
+      color: #122344;
+      font-weight: bold;
+    }
+    .airport-desc {
+      font-size: 0.8em;
+      color: #666;
+      margin-top: 4px;
+      line-height: 1.2em;
+    }
+  </style>
 </head>
 <body>
 
-<header>
-  <img src="logo.png" alt="CuteNew Logo">
+<header> 
+  <img src="logo.png" alt="CuteNew Logo" style="height: 1.2em; vertical-align: middle;">  
   CuteNew Gallery
 </header>
 
 <div id="container"></div>
 
 <script>
-// 从 CSV 读取并解析
-async function loadAirportData() {
-  const response = await fetch('./airportdata.csv');
-  const text = await response.text();
-  const lines = text.trim().split('\n').slice(1); // 去掉表头
-  const airports = [];
+  // 从 CSV 读取并解析
+  async function loadAirportData() {
+    const response = await fetch('./airportdata.csv');
+    const text = await response.text();
+    const lines = text.trim().split('\n').slice(1); // 去掉表头
+    const airports = [];
 
-  for (let line of lines) {
-    const [code, description] = line.split(',');
-    if (code) {
-      airports.push({
-        code: code.trim().toUpperCase(),
-        description: (description || '').trim(),
-        url: `https://example.com/${code.trim().toUpperCase()}`
-      });
-    }
-  }
-  return airports;
-}
-
-function renderAirports(airports) {
-  // 按字母排序
-  airports.sort((a, b) => a.code.localeCompare(b.code));
-
-  // 按首字母分组
-  const grouped = {};
-  airports.forEach(ap => {
-    const letter = ap.code[0];
-    if (!grouped[letter]) grouped[letter] = [];
-    grouped[letter].push(ap);
-  });
-
-  // 渲染到页面
-  const container = document.getElementById("container");
-  container.innerHTML = ''; // 清空
-  Object.keys(grouped).sort().forEach(letter => {
-    const section = document.createElement("div");
-    section.className = "letter-section";
-    section.innerHTML = `<h2>${letter}</h2>`;
-
-    const grid = document.createElement("div");
-    grid.className = "airport-grid";
-
-    grouped[letter].forEach(ap => {
-      const item = document.createElement("div");
-      item.className = "airport-item";
-
-      const link = document.createElement("a");
-      link.href = ap.url;
-      link.target = "_blank";
-      link.textContent = ap.code;
-
-      item.appendChild(link);
-
-      if (ap.description) {
-        const desc = document.createElement("div");
-        desc.className = "airport-desc";
-        desc.textContent = ap.description;
-        item.appendChild(desc);
+    for (let line of lines) {
+      const [code, description] = line.split(',');
+      if (code) {
+        airports.push({
+          code: code.trim().toUpperCase(),
+          description: (description || '').trim(),
+          url: `https://example.com/${code.trim().toUpperCase()}`
+        });
       }
+    }
+    return airports;
+  }
 
-      grid.appendChild(item);
+  function renderAirports(airports) {
+    // 按字母排序
+    airports.sort((a, b) => a.code.localeCompare(b.code));
+
+    // 按首字母分组
+    const grouped = {};
+    airports.forEach(ap => {
+      const letter = ap.code[0];
+      if (!grouped[letter]) grouped[letter] = [];
+      grouped[letter].push(ap);
     });
 
-    section.appendChild(grid);
-    container.appendChild(section);
-  });
-}
+    // 渲染到页面
+    const container = document.getElementById("container");
+    container.innerHTML = ''; // 清空
+    Object.keys(grouped).sort().forEach(letter => {
+      const section = document.createElement("div");
+      section.className = "letter-section";
+      section.innerHTML = `<h2>${letter}</h2>`;
 
-// 页面加载时执行
-loadAirportData().then(renderAirports);
+      const grid = document.createElement("div");
+      grid.className = "airport-grid";
+
+      grouped[letter].forEach(ap => {
+        const item = document.createElement("div");
+        item.className = "airport-item";
+
+        const link = document.createElement("a");
+        link.href = ap.url;
+        link.target = "_blank";
+        link.textContent = ap.code;
+
+        item.appendChild(link);
+
+        if (ap.description) {
+          const desc = document.createElement("div");
+          desc.className = "airport-desc";
+          desc.textContent = ap.description;
+          item.appendChild(desc);
+        }
+
+        grid.appendChild(item);
+      });
+
+      section.appendChild(grid);
+      container.appendChild(section);
+    });
+  }
+
+  // 页面加载时执行
+  loadAirportData().then(renderAirports);
 </script>
 
 </body>
