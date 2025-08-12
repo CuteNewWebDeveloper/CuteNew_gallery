@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<title>CuteNew Gallery - 按字母浏览</title>
+<title>CuteNew Gallery - 机场代码</title>
 <style>
   body {
     margin: 0;
@@ -40,26 +40,34 @@
     padding-bottom: 5px;
   }
 
-  /* 机场代码网格 */
+  /* 机场代码按钮 + 描述 */
   .airport-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     gap: 10px;
     margin-top: 15px;
   }
-  .airport-grid a {
-    display: block;
+  .airport-item {
     background: white;
     border-radius: 8px;
     text-align: center;
-    padding: 10px;
+    padding: 8px;
+    transition: background 0.3s;
+  }
+  .airport-item:hover {
+    background: #e0e6f8;
+  }
+  .airport-item a {
+    display: block;
     text-decoration: none;
     color: #122344;
     font-weight: bold;
-    transition: background 0.3s;
   }
-  .airport-grid a:hover {
-    background: #e0e6f8;
+  .airport-desc {
+    font-size: 0.8em;
+    color: #666;
+    margin-top: 4px;
+    line-height: 1.2em;
   }
 </style>
 </head>
@@ -73,31 +81,41 @@
 <div id="container"></div>
 
 <script>
-  // 示例数据（你可以换成自己的）
-  const airports = [
-    { code: "XMN", url: "https://example.com/XMN" },
-    { code: "PEK", url: "https://example.com/PEK" },
-    { code: "MUC", url: "https://example.com/MUC" },
-    { code: "LHR", url: "https://example.com/LHR" },
-    { code: "ICN", url: "https://example.com/ICN" },
-    { code: "XAY", url: "https://example.com/XAY" },
-    { code: "ORD", url: "https://example.com/ORD" },
-    { code: "NRT", url: "https://example.com/NRT" }
-  ];
+// 从 CSV 读取并解析
+async function loadAirportData() {
+  const response = await fetch('./airportdata.csv');
+  const text = await response.text();
+  const lines = text.trim().split('\n').slice(1); // 去掉表头
+  const airports = [];
 
+  for (let line of lines) {
+    const [code, description] = line.split(',');
+    if (code) {
+      airports.push({
+        code: code.trim().toUpperCase(),
+        description: (description || '').trim(),
+        url: `https://example.com/${code.trim().toUpperCase()}`
+      });
+    }
+  }
+  return airports;
+}
+
+function renderAirports(airports) {
   // 按字母排序
   airports.sort((a, b) => a.code.localeCompare(b.code));
 
   // 按首字母分组
   const grouped = {};
   airports.forEach(ap => {
-    const letter = ap.code[0].toUpperCase();
+    const letter = ap.code[0];
     if (!grouped[letter]) grouped[letter] = [];
     grouped[letter].push(ap);
   });
 
   // 渲染到页面
   const container = document.getElementById("container");
+  container.innerHTML = ''; // 清空
   Object.keys(grouped).sort().forEach(letter => {
     const section = document.createElement("div");
     section.className = "letter-section";
@@ -107,16 +125,33 @@
     grid.className = "airport-grid";
 
     grouped[letter].forEach(ap => {
-      const a = document.createElement("a");
-      a.href = ap.url;
-      a.target = "_blank";
-      a.textContent = ap.code;
-      grid.appendChild(a);
+      const item = document.createElement("div");
+      item.className = "airport-item";
+
+      const link = document.createElement("a");
+      link.href = ap.url;
+      link.target = "_blank";
+      link.textContent = ap.code;
+
+      item.appendChild(link);
+
+      if (ap.description) {
+        const desc = document.createElement("div");
+        desc.className = "airport-desc";
+        desc.textContent = ap.description;
+        item.appendChild(desc);
+      }
+
+      grid.appendChild(item);
     });
 
     section.appendChild(grid);
     container.appendChild(section);
   });
+}
+
+// 页面加载时执行
+loadAirportData().then(renderAirports);
 </script>
 
 </body>
