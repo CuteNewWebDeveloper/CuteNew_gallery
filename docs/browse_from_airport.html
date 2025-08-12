@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>CuteNew Gallery - 按字母浏览</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    padding-top: 80px;
+  }
+  header {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    z-index: 1000;
+    background-color: #122344;
+    color: white;
+    text-align: center;
+    padding: 1em;
+    font-size: 1.5em;
+  }
+  header img {
+    height: 1.2em;
+    vertical-align: middle;
+    margin-right: 0.4em;
+  }
+
+  /* 字母分组标题 */
+  .letter-section {
+    margin: 20px auto;
+    max-width: 1000px;
+    padding: 0 1em;
+  }
+  .letter-section h2 {
+    color: #122344;
+    font-size: 1.8em;
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 5px;
+  }
+
+  /* 机场代码网格 */
+  .airport-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 10px;
+    margin-top: 15px;
+  }
+  .airport-grid a {
+    display: block;
+    background: white;
+    border-radius: 8px;
+    text-align: center;
+    padding: 10px;
+    text-decoration: none;
+    color: #122344;
+    font-weight: bold;
+    transition: background 0.3s;
+  }
+  .airport-grid a:hover {
+    background: #e0e6f8;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="logo.png" alt="CuteNew Logo">
+  CuteNew Gallery
+</header>
+
+<div id="container"></div>
+
+<script>
+  // 示例数据（你可以换成自己的）
+  const airports = [
+    { code: "XMN", url: "https://example.com/XMN" },
+    { code: "PEK", url: "https://example.com/PEK" },
+    { code: "MUC", url: "https://example.com/MUC" },
+    { code: "LHR", url: "https://example.com/LHR" },
+    { code: "ICN", url: "https://example.com/ICN" },
+    { code: "XAY", url: "https://example.com/XAY" },
+    { code: "ORD", url: "https://example.com/ORD" },
+    { code: "NRT", url: "https://example.com/NRT" }
+  ];
+
+  // 按字母排序
+  airports.sort((a, b) => a.code.localeCompare(b.code));
+
+  // 按首字母分组
+  const grouped = {};
+  airports.forEach(ap => {
+    const letter = ap.code[0].toUpperCase();
+    if (!grouped[letter]) grouped[letter] = [];
+    grouped[letter].push(ap);
+  });
+
+  // 渲染到页面
+  const container = document.getElementById("container");
+  Object.keys(grouped).sort().forEach(letter => {
+    const section = document.createElement("div");
+    section.className = "letter-section";
+    section.innerHTML = `<h2>${letter}</h2>`;
+
+    const grid = document.createElement("div");
+    grid.className = "airport-grid";
+
+    grouped[letter].forEach(ap => {
+      const a = document.createElement("a");
+      a.href = ap.url;
+      a.target = "_blank";
+      a.textContent = ap.code;
+      grid.appendChild(a);
+    });
+
+    section.appendChild(grid);
+    container.appendChild(section);
+  });
+</script>
+
+</body>
+</html>
