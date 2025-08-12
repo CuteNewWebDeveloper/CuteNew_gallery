@@ -824,3 +824,39 @@ def main1():
 
 if __name__ == "__main__":
     main1()
+
+
+
+import csv
+from collections import Counter
+from datetime import datetime
+
+input_path = './docs/images/image_log.csv'
+output_path = './docs/datedata.csv'
+
+date_counts = Counter()
+
+with open(input_path, newline='', encoding='utf-8') as f:
+    reader = csv.DictReader(f)
+    for row in reader:
+        time_str = row['time'].strip()
+        # time格式是用点号分隔，可能是 2025.8.1 或 2025.08.01 等
+        parts = time_str.split('.')
+        if len(parts) == 3:
+            year, month, day = parts
+            # 补零，转换为 YYYY-MM-DD 格式
+            try:
+                date_obj = datetime(year=int(year), month=int(month), day=int(day))
+                date_key = date_obj.strftime('%Y-%m-%d')
+                date_counts[date_key] += 1
+            except ValueError:
+                # 如果日期格式不对，跳过
+                continue
+
+# 写入结果
+with open(output_path, 'w', newline='', encoding='utf-8') as f:
+    writer = csv.writer(f)
+    writer.writerow(['date', 'count'])
+    for date_key in sorted(date_counts):
+        writer.writerow([date_key, date_counts[date_key]])
+
