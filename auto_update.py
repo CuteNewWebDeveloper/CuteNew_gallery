@@ -537,10 +537,10 @@ header {
 }
 
 /* 循环色系 */
-.tag1 { background-color: #007bff; }  /* 蓝 */
-.tag2 { background-color: #28a745; }  /* 绿 */
-.tag3 { background-color: #ffc107; color: black; }  /* 黄 */
-.tag4 { background-color: #dc3545; }  /* 红 */
+.tag1 { background-color: #122344; }  /* 蓝 */
+.tag2 { background-color: #344d66; }  /* 绿 */
+.tag3 { background-color: #567488; color: black; }  /* 黄 */
+.tag4 { background-color: #567488; }  /* 红 */
 
 /* 深色模式微调（可选） */
 @media (prefers-color-scheme: dark) {
