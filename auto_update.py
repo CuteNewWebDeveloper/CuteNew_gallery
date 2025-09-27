@@ -118,6 +118,8 @@ def add_text_bar_to_image(image_path):
         time_of_photo = parts[0]
         location = parts[1].upper()
         name = ' '.join(parts[2:])
+        while name.startswith('-'):
+            name = name[1:]
 
     year = time_of_photo.split('.')[0] if '.' in time_of_photo else time_of_photo
 
@@ -233,6 +235,8 @@ def process_new_file(file_path):
         part1 = parts[0]
         part2 = parts[1]
         part3 = ' '.join(parts[2:])
+        while part3.startswith('-'):
+            part3 = part3[1:]
 
     print(f"[Valid] Processing JPG image: {filename}")
     print(f"  → Part1: {part1}, Part2: {part2}, Part3: {part3}")
