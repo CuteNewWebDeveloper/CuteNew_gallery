@@ -1,566 +1,252 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CuteNew Gallery</title>
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-
-  <style>
-    body {
-      margin: 0;
-      font-family: sans-serif;
-      background-color: #f5f5f5;
-       padding-top: 80px; 
-    }
-header {
-  position: fixed;     /* 固定在页面上 */
-  top: 0;              /* 距离页面顶部 0 */
-  left: 0;             /* 从左边开始 */
-  width: 100%;         /* 占满宽度 */
-  z-index: 1000;       /* 确保盖在其他内容之上 */
-  
-  background-color: #122344;
-  color: white;
-  text-align: center;
-  padding: 1em;
-  font-size: 1.5em;
-}
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 16px;
-      padding: 16px;
-    }
-    .gallery-item {
-      background-color: white;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      transition: transform 0.2s ease;
-    }
-    .gallery-item:hover {
-      transform: scale(1.03);
-    }
-    .gallery-item img {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-    .caption {
-      padding: 8px;
-      text-align: center;
-      font-size: 0.9em;
-      color: #333;
-    }
-    .caption.tags {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 6px;
-  padding: 8px;
-}
-
-.tag {
-  display: inline-block;
-  padding: 4px 12px;
-  font-size: 0.8em;
-  font-weight: 500;
-  border-radius: 999px;
-  color: white;
-  background-color: #888;
-  transition: background-color 0.3s ease;
-}
-
-/* 循环色系 */
-.tag1 { background-color: #122344; }  /* 蓝 */
-.tag2 { background-color: #344d66; }  /* 绿 */
-.tag3 { background-color: #567488; }  /* 黄 */
-.tag4 { background-color: #567488; }  /* 红 */
-
-/* 深色模式微调（可选） */
-@media (prefers-color-scheme: dark) {
-  .tag3 { background-color: #ffca2c; color: black; }
-}
-
-  .pagination a {
-    margin: 0 6px;
-    text-decoration: none;
-    color: #0077cc;
-    font-weight: bold;
-  }
-  .pagination a:hover {
-    text-decoration: underline;
-  }
-
-
-      .goto-container {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 16px;
-  }
-
-  .goto-container input[type="number"] {
-    width: 60px;
-    padding: 4px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    text-align: center;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
-  .goto-container input[type="number"]:focus {
-    border-color: #0077cc;
-  }
-
-  .goto-container button {
-    background-color: #0077cc;
-    color: white;
-    border: none;
-    padding: 6px 14px;
-    font-size: 14px;
-    border-radius: 6px;
-    cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-    transition: background-color 0.3s, transform 0.1s;
-  }
-
-  .goto-container button:hover {
-    background-color: #005fa3;
-  }
-
-  .goto-container button:active {
-    transform: scale(0.97);
-  }
-
-  </style>
-
-
-
-
-<header> 
-    <img src="logo.png" alt="CuteNew Logo" style="height: 1.2em; vertical-align: middle;">  
-CuteNew Gallery
-  </header>
-
-
-
-
-
-
-
-  <main class="gallery">
-
-
-
-
-
-
-
-
-
-
-
-<a href="pages/Paged7c95f6b-b3fb-4ef9-a65f-8f63bb100bf1.html" class="gallery-item">
-  <img src="images_preview/d7c95f6b-b3fb-4ef9-a65f-8f63bb100bf1.jpg" alt="图片133">
-  <div class="caption tags">
-  <span class="tag tag1">2025.7.18</span>
-  <span class="tag tag2">NRT</span>
-  <span class="tag tag3">FENG</span>
-</div>
-
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="CuteNew Gallery 航空摄影图库">
+  <title>CuteNew Gallery · 第 9 页</title>
+  <link rel="icon" href="favicon.ico">
+  <link rel="stylesheet" href="assets/site.css">
+  <script src="assets/site.js" defer></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="site-title" href="index.html">CuteNew Gallery</a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html" aria-current="page">首页</a>
+      <a href="browse_from_date.html">按日期</a>
+      <a href="browse_from_airport.html">按机场</a>
+    </nav>
+    <img class="site-logo" src="assets/brand-watermark.png" alt="CuteNew Gallery">
+  </div>
+</header>
+<main>
+<section class="gallery" aria-label="图片画廊"><a href="pages/Paged7c95f6b-b3fb-4ef9-a65f-8f63bb100bf1.html" class="gallery-item">
+  <img src="images_preview/d7c95f6b-b3fb-4ef9-a65f-8f63bb100bf1.jpg" alt="2025.7.18 · NRT · FENG" loading="lazy">
+  <div class="tags">
+    <span class="tag tag--date">2025.7.18</span>
+    <span class="tag tag--location">NRT</span>
+    <span class="tag tag--photographer">FENG</span>
+  </div>
 </a>
-
 <a href="pages/Page73f35290-dbda-45a3-a60e-0f1dbf6d5c5a.html" class="gallery-item">
-  <img src="images_preview/73f35290-dbda-45a3-a60e-0f1dbf6d5c5a.jpg" alt="图片132">
-  <div class="caption tags">
-  <span class="tag tag1">2025.3.30</span>
-  <span class="tag tag2">EGWN</span>
-  <span class="tag tag3">SKDD</span>
-</div>
-
+  <img src="images_preview/73f35290-dbda-45a3-a60e-0f1dbf6d5c5a.jpg" alt="2025.3.30 · EGWN · SKDD" loading="lazy">
+  <div class="tags">
+    <span class="tag tag--date">2025.3.30</span>
+    <span class="tag tag--location">EGWN</span>
+    <span class="tag tag--photographer">SKDD</span>
+  </div>
 </a>
-
 <a href="pages/Pageefe83aa6-a4dd-4997-a0e2-7c8f8a2af19c.html" class="gallery-item">
-  <img src="images_preview/efe83aa6-a4dd-4997-a0e2-7c8f8a2af19c.jpg" alt="图片131">
-  <div class="caption tags">
-  <span class="tag tag1">2025.6.10</span>
-  <span class="tag tag2">XMN</span>
-  <span class="tag tag3">21200221</span>
-</div>
-
+  <img src="images_preview/efe83aa6-a4dd-4997-a0e2-7c8f8a2af19c.jpg" alt="2025.6.10 · XMN · 21200221" loading="lazy">
+  <div class="tags">
+    <span class="tag tag--date">2025.6.10</span>
+    <span class="tag tag--location">XMN</span>
+    <span class="tag tag--photographer">21200221</span>
+  </div>
 </a>
-
 <a href="pages/Page4add2163-b9f8-4165-bbae-542077b623ca.html" class="gallery-item">
-  <img src="images_preview/4add2163-b9f8-4165-bbae-542077b623ca.jpg" alt="图片130">
-  <div class="caption tags">
-  <span class="tag tag1">2025.6.5</span>
-  <span class="tag tag2">DEQ</span>
-  <span class="tag tag3">ZSHC_TX</span>
-</div>
-
+  <img src="images_preview/4add2163-b9f8-4165-bbae-542077b623ca.jpg" alt="2025.6.5 · DEQ · ZSHC_TX" loading="lazy">
+  <div class="tags">
+    <span class="tag tag--date">2025.6.5</span>
+    <span class="tag tag--location">DEQ</span>
+    <span class="tag tag--photographer">ZSHC_TX</span>
+  </div>
 </a>
-
 <a href="pages/Pageb871a3c6-d710-41d2-811d-cc8cbe4ada18.html" class="gallery-item">
-  <img src="images_preview/b871a3c6-d710-41d2-811d-cc8cbe4ada18.jpg" alt="图片129">
-  <div class="caption tags">
-  <span class="tag tag1">2025.6.7</span>
-  <span class="tag tag2">TSN</span>
-  <span class="tag tag3">ZBAD-Aviation</span>
-</div>
-
+  <img src="images_preview/b871a3c6-d710-41d2-811d-cc8cbe4ada18.jpg" alt="2025.6.7 · TSN · ZBAD-Aviation" loading="lazy">
+  <div class="tags">
+    <span class="tag tag--date">2025.6.7</span>
+    <span class="tag tag--location">TSN</span>
+    <span class="tag tag--photographer">ZBAD-Aviation</span>
+  </div>
 </a>
-
 <a href="pages/Page4bce3cb7-c987-4f05-9860-6da8179536fe.html" class="gallery-item">
-  <img src="images_preview/4bce3cb7-c987-4f05-9860-6da8179536fe.jpg" alt="图片128">
-  <div class="caption tags">
-  <span class="tag tag1">2025.6.3</span>
-  <span class="tag tag2">PEK</span>
-  <span class="tag tag3">liyuxuan</span>
-</div>
-
+  <img src="images_preview/4bce3cb7-c987-4f05-9860-6da8179536fe.jpg" alt="2025.6.3 · PEK · liyuxuan" loading="lazy">
+  <div class="tags">
+    <span class="tag tag--date">2025.6.3</span>
+    <span class="tag tag--location">PEK</span>
+    <span class="tag tag--photographer">liyuxuan</span>
+  </div>
 </a>
-
 <a href="pages/Page170bbd8f-45e5-4c0b-b6e3-ceffb4502207.html" class="gallery-item">
-  <img src="images_preview/170bbd8f-45e5-4c0b-b6e3-ceffb4502207.jpg" alt="图片127">
-  <div class="caption tags">
-  <span class="tag tag1">2025.2.17</span>
-  <span class="tag tag2">TSA</span>
-  <span class="tag tag3">Dongliang</span>
-</div>
-
+  <img src="images_preview/170bbd8f-45e5-4c0b-b6e3-ceffb4502207.jpg" alt="2025.2.17 · TSA · Dongliang" loading="lazy">
+  <div class="tags">
+    <span class="tag tag--date">2025.2.17</span>
+    <span class="tag tag--location">TSA</span>
+    <span class="tag tag--photographer">Dongliang</span>
+  </div>
 </a>
-
 <a href="pages/Pagecce6c520-f9ab-4611-91e2-251d89606a51.html" class="gallery-item">
-  <img src="images_preview/cce6c520-f9ab-4611-91e2-251d89606a51.jpg" alt="图片126">
-  <div class="caption tags">
-  <span class="tag tag1">2025.3.10</span>
-  <span class="tag tag2">HKT</span>
-  <span class="tag tag3">FrankRR</span>
-</div>
-
+  <img src="images_preview/cce6c520-f9ab-4611-91e2-251d89606a51.jpg" alt="2025.3.10 · HKT · FrankRR" loading="lazy">
+  <div class="tags">
+    <span class="tag tag--date">2025.3.10</span>
+    <span class="tag tag--location">HKT</span>
+    <span class="tag tag--photographer">FrankRR</span>
+  </div>
 </a>
-
 <a href="pages/Page63ce04dc-1c88-449b-89a0-3c990b9e4f3a.html" class="gallery-item">
-  <img src="images_preview/63ce04dc-1c88-449b-89a0-3c990b9e4f3a.jpg" alt="图片125">
-  <div class="caption tags">
-  <span class="tag tag1">2025.4.23</span>
-  <span class="tag tag2">HGH</span>
-  <span class="tag tag3">ZHO</span>
-</div>
-
+  <img src="images_preview/63ce04dc-1c88-449b-89a0-3c990b9e4f3a.jpg" alt="2025.4.23 · HGH · ZHO" loading="lazy">
+  <div class="tags">
+    <span class="tag tag--date">2025.4.23</span>
+    <span class="tag tag--location">HGH</span>
+    <span class="tag tag--photographer">ZHO</span>
+  </div>
 </a>
-
 <a href="pages/Page2a96f0bd-96c1-43f2-8cb7-61bbd026ea8f.html" class="gallery-item">
-  <img src="images_preview/2a96f0bd-96c1-43f2-8cb7-61bbd026ea8f.jpg" alt="图片124">
-  <div class="caption tags">
-  <span class="tag tag1">2025.1.20</span>
-  <span class="tag tag2">XMN</span>
-  <span class="tag tag3">Twyawa</span>
-</div>
-
+  <img src="images_preview/2a96f0bd-96c1-43f2-8cb7-61bbd026ea8f.jpg" alt="2025.1.20 · XMN · Twyawa" loading="lazy">
+  <div class="tags">
+    <span class="tag tag--date">2025.1.20</span>
+    <span class="tag tag--location">XMN</span>
+    <span class="tag tag--photographer">Twyawa</span>
+  </div>
 </a>
-
 <a href="pages/Pagea8f75fe9-31e8-4efd-afea-b04481cdb1a8.html" class="gallery-item">
-  <img src="images_preview/a8f75fe9-31e8-4efd-afea-b04481cdb1a8.jpg" alt="图片123">
-  <div class="caption tags">
-  <span class="tag tag1">2025.1.24</span>
-  <span class="tag tag2">HKG</span>
-  <span class="tag tag3">NKG Spotter</span>
-</div>
-
+  <img src="images_preview/a8f75fe9-31e8-4efd-afea-b04481cdb1a8.jpg" alt="2025.1.24 · HKG · NKG Spotter" loading="lazy">
+  <div class="tags">
+    <span class="tag tag--date">2025.1.24</span>
+    <span class="tag tag--location">HKG</span>
+    <span class="tag tag--photographer">NKG Spotter</span>
+  </div>
 </a>
-
 <a href="pages/Page18ea96d2-2c81-4956-87b7-c6cb0e41a7ed.html" class="gallery-item">
-  <img src="images_preview/18ea96d2-2c81-4956-87b7-c6cb0e41a7ed.jpg" alt="图片122">
-  <div class="caption tags">
-  <span class="tag tag1">2025.1.1</span>
-  <span class="tag tag2">CAN</span>
-  <span class="tag tag3">12.3Somi</span>
-</div>
-
+  <img src="images_preview/18ea96d2-2c81-4956-87b7-c6cb0e41a7ed.jpg" alt="2025.1.1 · CAN · 12.3Somi" loading="lazy">
+  <div class="tags">
+    <span class="tag tag--date">2025.1.1</span>
+    <span class="tag tag--location">CAN</span>
+    <span class="tag tag--photographer">12.3Somi</span>
+  </div>
 </a>
-
 <a href="pages/Page9010bee2-cd4b-405c-a6a9-56f3aecd98b0.html" class="gallery-item">
-  <img src="images_preview/9010bee2-cd4b-405c-a6a9-56f3aecd98b0.jpg" alt="图片121">
-  <div class="caption tags">
-  <span class="tag tag1">2025.1.16</span>
-  <span class="tag tag2">SHA</span>
-  <span class="tag tag3">yty</span>
-</div>
-
+  <img src="images_preview/9010bee2-cd4b-405c-a6a9-56f3aecd98b0.jpg" alt="2025.1.16 · SHA · yty" loading="lazy">
+  <div class="tags">
+    <span class="tag tag--date">2025.1.16</span>
+    <span class="tag tag--location">SHA</span>
+    <span class="tag tag--photographer">yty</span>
+  </div>
 </a>
-
 <a href="pages/Pagee9988b81-15c6-43c1-9065-a61ce7fecdbc.html" class="gallery-item">
-  <img src="images_preview/e9988b81-15c6-43c1-9065-a61ce7fecdbc.jpg" alt="图片120">
-  <div class="caption tags">
-  <span class="tag tag1">2024.10.1</span>
-  <span class="tag tag2">HKG</span>
-  <span class="tag tag3">Eliauk.</span>
-</div>
-
+  <img src="images_preview/e9988b81-15c6-43c1-9065-a61ce7fecdbc.jpg" alt="2024.10.1 · HKG · Eliauk." loading="lazy">
+  <div class="tags">
+    <span class="tag tag--date">2024.10.1</span>
+    <span class="tag tag--location">HKG</span>
+    <span class="tag tag--photographer">Eliauk.</span>
+  </div>
 </a>
-
 <a href="pages/Pageed901977-eb41-4bb6-9a90-d1b55f11e373.html" class="gallery-item">
-  <img src="images_preview/ed901977-eb41-4bb6-9a90-d1b55f11e373.jpg" alt="图片119">
-  <div class="caption tags">
-  <span class="tag tag1">2024.12.15</span>
-  <span class="tag tag2">HGH</span>
-  <span class="tag tag3">Aviation He</span>
-</div>
-
+  <img src="images_preview/ed901977-eb41-4bb6-9a90-d1b55f11e373.jpg" alt="2024.12.15 · HGH · Aviation He" loading="lazy">
+  <div class="tags">
+    <span class="tag tag--date">2024.12.15</span>
+    <span class="tag tag--location">HGH</span>
+    <span class="tag tag--photographer">Aviation He</span>
+  </div>
 </a>
-
 <a href="pages/Page2234d6d5-ab23-47db-b7ab-f3c75489dfe4.html" class="gallery-item">
-  <img src="images_preview/2234d6d5-ab23-47db-b7ab-f3c75489dfe4.jpg" alt="图片118">
-  <div class="caption tags">
-  <span class="tag tag1">2024.11.16</span>
-  <span class="tag tag2">ZUH</span>
-  <span class="tag tag3">wuzl ZSHC</span>
-</div>
-
+  <img src="images_preview/2234d6d5-ab23-47db-b7ab-f3c75489dfe4.jpg" alt="2024.11.16 · ZUH · wuzl ZSHC" loading="lazy">
+  <div class="tags">
+    <span class="tag tag--date">2024.11.16</span>
+    <span class="tag tag--location">ZUH</span>
+    <span class="tag tag--photographer">wuzl ZSHC</span>
+  </div>
 </a>
-
 <a href="pages/Page3cb3e6fc-5fba-4ef1-af53-1928882bace7.html" class="gallery-item">
-  <img src="images_preview/3cb3e6fc-5fba-4ef1-af53-1928882bace7.jpg" alt="图片117">
-  <div class="caption tags">
-  <span class="tag tag1">2024.10.2</span>
-  <span class="tag tag2">PVG</span>
-  <span class="tag tag3">E75</span>
-</div>
-
+  <img src="images_preview/3cb3e6fc-5fba-4ef1-af53-1928882bace7.jpg" alt="2024.10.2 · PVG · E75" loading="lazy">
+  <div class="tags">
+    <span class="tag tag--date">2024.10.2</span>
+    <span class="tag tag--location">PVG</span>
+    <span class="tag tag--photographer">E75</span>
+  </div>
 </a>
-
 <a href="pages/Page96c6b501-4516-4b03-bee6-f2684e1e34c3.html" class="gallery-item">
-  <img src="images_preview/96c6b501-4516-4b03-bee6-f2684e1e34c3.jpg" alt="图片116">
-  <div class="caption tags">
-  <span class="tag tag1">2024.11.9</span>
-  <span class="tag tag2">ZUH</span>
-  <span class="tag tag3">Suzuna</span>
-</div>
-
+  <img src="images_preview/96c6b501-4516-4b03-bee6-f2684e1e34c3.jpg" alt="2024.11.9 · ZUH · Suzuna" loading="lazy">
+  <div class="tags">
+    <span class="tag tag--date">2024.11.9</span>
+    <span class="tag tag--location">ZUH</span>
+    <span class="tag tag--photographer">Suzuna</span>
+  </div>
 </a>
-
 <a href="pages/Page0b061dff-904a-4365-b7e4-c4bda1aa44b6.html" class="gallery-item">
-  <img src="images_preview/0b061dff-904a-4365-b7e4-c4bda1aa44b6.jpg" alt="图片115">
-  <div class="caption tags">
-  <span class="tag tag1">2024.9.15</span>
-  <span class="tag tag2">SYX</span>
-  <span class="tag tag3">Sky EOS</span>
-</div>
-
+  <img src="images_preview/0b061dff-904a-4365-b7e4-c4bda1aa44b6.jpg" alt="2024.9.15 · SYX · Sky EOS" loading="lazy">
+  <div class="tags">
+    <span class="tag tag--date">2024.9.15</span>
+    <span class="tag tag--location">SYX</span>
+    <span class="tag tag--photographer">Sky EOS</span>
+  </div>
 </a>
-
 <a href="pages/Page2ed62cbf-05a6-4798-84e0-474fea0cdffe.html" class="gallery-item">
-  <img src="images_preview/2ed62cbf-05a6-4798-84e0-474fea0cdffe.jpg" alt="图片114">
-  <div class="caption tags">
-  <span class="tag tag1">2024.5.9</span>
-  <span class="tag tag2">HGH</span>
-  <span class="tag tag3">椰子</span>
-</div>
-
+  <img src="images_preview/2ed62cbf-05a6-4798-84e0-474fea0cdffe.jpg" alt="2024.5.9 · HGH · 椰子" loading="lazy">
+  <div class="tags">
+    <span class="tag tag--date">2024.5.9</span>
+    <span class="tag tag--location">HGH</span>
+    <span class="tag tag--photographer">椰子</span>
+  </div>
 </a>
-
 <a href="pages/Page5d5de91f-dc39-49d4-b9ec-d93975d3c24a.html" class="gallery-item">
-  <img src="images_preview/5d5de91f-dc39-49d4-b9ec-d93975d3c24a.jpg" alt="图片113">
-  <div class="caption tags">
-  <span class="tag tag1">2024.7.29</span>
-  <span class="tag tag2">HGH</span>
-  <span class="tag tag3">ZSHC Sky</span>
-</div>
-
+  <img src="images_preview/5d5de91f-dc39-49d4-b9ec-d93975d3c24a.jpg" alt="2024.7.29 · HGH · ZSHC Sky" loading="lazy">
+  <div class="tags">
+    <span class="tag tag--date">2024.7.29</span>
+    <span class="tag tag--location">HGH</span>
+    <span class="tag tag--photographer">ZSHC Sky</span>
+  </div>
 </a>
-
 <a href="pages/Pageec59c31d-398a-419f-8fd6-6334596995dc.html" class="gallery-item">
-  <img src="images_preview/ec59c31d-398a-419f-8fd6-6334596995dc.jpg" alt="图片112">
-  <div class="caption tags">
-  <span class="tag tag1">2024.7.9</span>
-  <span class="tag tag2">PAE</span>
-  <span class="tag tag3">RoMANTiC PEK</span>
-</div>
-
+  <img src="images_preview/ec59c31d-398a-419f-8fd6-6334596995dc.jpg" alt="2024.7.9 · PAE · RoMANTiC PEK" loading="lazy">
+  <div class="tags">
+    <span class="tag tag--date">2024.7.9</span>
+    <span class="tag tag--location">PAE</span>
+    <span class="tag tag--photographer">RoMANTiC PEK</span>
+  </div>
 </a>
-
 <a href="pages/Pagea1d25b94-2e39-4aad-a85f-cfc240b55a09.html" class="gallery-item">
-  <img src="images_preview/a1d25b94-2e39-4aad-a85f-cfc240b55a09.jpg" alt="图片111">
-  <div class="caption tags">
-  <span class="tag tag1">2023.9.30</span>
-  <span class="tag tag2">HGH</span>
-  <span class="tag tag3">Zzl</span>
-</div>
-
+  <img src="images_preview/a1d25b94-2e39-4aad-a85f-cfc240b55a09.jpg" alt="2023.9.30 · HGH · Zzl" loading="lazy">
+  <div class="tags">
+    <span class="tag tag--date">2023.9.30</span>
+    <span class="tag tag--location">HGH</span>
+    <span class="tag tag--photographer">Zzl</span>
+  </div>
 </a>
-
 <a href="pages/Page46724453-3a8f-4abd-bf7e-beb5110b4df4.html" class="gallery-item">
-  <img src="images_preview/46724453-3a8f-4abd-bf7e-beb5110b4df4.jpg" alt="图片108">
-  <div class="caption tags">
-  <span class="tag tag1">2025.2.5</span>
-  <span class="tag tag2">PEK</span>
-  <span class="tag tag3">jiananlan</span>
-</div>
-
+  <img src="images_preview/46724453-3a8f-4abd-bf7e-beb5110b4df4.jpg" alt="2025.2.5 · PEK · jiananlan" loading="lazy">
+  <div class="tags">
+    <span class="tag tag--date">2025.2.5</span>
+    <span class="tag tag--location">PEK</span>
+    <span class="tag tag--photographer">jiananlan</span>
+  </div>
 </a>
-
 <a href="pages/Page1cf4bd69-036b-4abe-b504-bf670fbd8ffa.html" class="gallery-item">
-  <img src="images_preview/1cf4bd69-036b-4abe-b504-bf670fbd8ffa.jpg" alt="图片105">
-  <div class="caption tags">
-  <span class="tag tag1">2025.7.9</span>
-  <span class="tag tag2">PVG</span>
-  <span class="tag tag3">Eliauk</span>
-</div>
-
+  <img src="images_preview/1cf4bd69-036b-4abe-b504-bf670fbd8ffa.jpg" alt="2025.7.9 · PVG · Eliauk" loading="lazy">
+  <div class="tags">
+    <span class="tag tag--date">2025.7.9</span>
+    <span class="tag tag--location">PVG</span>
+    <span class="tag tag--photographer">Eliauk</span>
+  </div>
 </a>
-
 <a href="pages/Pagef9dd10f8-58df-472a-90b0-d78c8318040f.html" class="gallery-item">
-  <img src="images_preview/f9dd10f8-58df-472a-90b0-d78c8318040f.jpg" alt="图片104">
-  <div class="caption tags">
-  <span class="tag tag1">2025.7.5</span>
-  <span class="tag tag2">PEK</span>
-  <span class="tag tag3">jiananlan</span>
-</div>
-
+  <img src="images_preview/f9dd10f8-58df-472a-90b0-d78c8318040f.jpg" alt="2025.7.5 · PEK · jiananlan" loading="lazy">
+  <div class="tags">
+    <span class="tag tag--date">2025.7.5</span>
+    <span class="tag tag--location">PEK</span>
+    <span class="tag tag--photographer">jiananlan</span>
+  </div>
 </a>
-
 <a href="pages/Page0c6c05b9-4d7a-4a53-afdc-3d53cfe883d0.html" class="gallery-item">
-  <img src="images_preview/0c6c05b9-4d7a-4a53-afdc-3d53cfe883d0.jpg" alt="图片103">
-  <div class="caption tags">
-  <span class="tag tag1">2025.6.23</span>
-  <span class="tag tag2">CAN</span>
-  <span class="tag tag3">21200221</span>
-</div>
-
+  <img src="images_preview/0c6c05b9-4d7a-4a53-afdc-3d53cfe883d0.jpg" alt="2025.6.23 · CAN · 21200221" loading="lazy">
+  <div class="tags">
+    <span class="tag tag--date">2025.6.23</span>
+    <span class="tag tag--location">CAN</span>
+    <span class="tag tag--photographer">21200221</span>
+  </div>
 </a>
-
 <a href="pages/Page58513d67-91bd-4e72-9cab-a57f0566e82c.html" class="gallery-item">
-  <img src="images_preview/58513d67-91bd-4e72-9cab-a57f0566e82c.jpg" alt="图片102">
-  <div class="caption tags">
-  <span class="tag tag1">2025.7.2</span>
-  <span class="tag tag2">HFE</span>
-  <span class="tag tag3">深空不明天体</span>
-</div>
-
-</a>
-
-
-
-
-      </main>
-
-
-
-<div class="pagination" style="text-align: center; margin: 40px 0;">
-  <style>
-    /* 专门给页码按钮的样式 */
-    .pagination .page-btn {
-      display: inline-block;
-      padding: 6px 10px;
-      margin: 0 3px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      text-decoration: none;
-      color: #333;
-      font-size: 14px;
-      min-width: 30px;
-      text-align: center;
-    }
-    .pagination a.page-btn:hover {
-      background-color: #f0f0f0;
-    }
-    .pagination .page-btn.current {
-      background-color: #122344;
-      font-weight: bold;
-      color: white;
-      cursor: default;
-    }
-    .goto-container {
-      margin-top: 15px;
-    }
-    .goto-container input {
-      width: 50px;
-      padding: 4px;
-      text-align: center;
-    }
-    .goto-container button {
-      padding: 4px 8px;
-      background-color: #122344;
-      margin-left: 5px;
-    }
-  </style>
-
-  <script>
-    const currentPage = 9; // 当前页码
-    const totalPages = 13; // 总页数
-    let html = '';
-
-    function addPageLink(page) {
-      if (page === currentPage) {
-        html += `<span class="page-btn current">${page}</span>`;
-      } else {
-        html += `<a class="page-btn" href="${page === 1 ? 'index.html' : 'page' + page + '.html'}">${page}</a>`;
-      }
-    }
-
-    // 第一页
-    addPageLink(1);
-
-    // 左省略号
-    if (currentPage > 4) {
-      html += `<span>...</span>`;
-    }
-
-    // 中间页码范围（i-2 到 i+2）
-    const start = Math.max(2, currentPage - 2);
-    const end = Math.min(totalPages - 1, currentPage + 2);
-    for (let i = start; i <= end; i++) {
-      addPageLink(i);
-    }
-
-    // 右省略号
-    if (currentPage < totalPages - 3) {
-      html += `<span>...</span>`;
-    }
-
-    // 最后一页
-    if (totalPages > 1) {
-      addPageLink(totalPages);
-    }
-
-    // 跳转输入框（"页" 不加按钮样式）
-    html += `
-    <br>
-      <div class="goto-container">
-        <label for="gotoPage">共${totalPages}页，跳转到第</label>
-        <input id="gotoPage" type="number" min="1" max="${totalPages}" value="${currentPage}">
-        <span>页</span>
-        <button onclick="gotoPage()">跳转</button>
-      </div>
-    `;
-
-    document.write(html);
-
-    function gotoPage() {
-      const page = parseInt(document.getElementById('gotoPage').value);
-      if (isNaN(page) || page < 1 || page > totalPages) {
-        alert('请输入有效的页码！');
-        return;
-      }
-      location.href = page === 1 ? 'index.html' : `page${page}.html`;
-    }
-  </script>
-</div>
-
-
-
-
-
-
-
-
-
-
-  
+  <img src="images_preview/58513d67-91bd-4e72-9cab-a57f0566e82c.jpg" alt="2025.7.2 · HFE · 深空不明天体" loading="lazy">
+  <div class="tags">
+    <span class="tag tag--date">2025.7.2</span>
+    <span class="tag tag--location">HFE</span>
+    <span class="tag tag--photographer">深空不明天体</span>
+  </div>
+</a></section>
+<nav class="pagination" aria-label="分页"><a class="page-btn" href="index.html">1</a><a class="page-btn" href="page2.html">2</a><a class="page-btn" href="page3.html">3</a><a class="page-btn" href="page4.html">4</a><a class="page-btn" href="page5.html">5</a><a class="page-btn" href="page6.html">6</a><a class="page-btn" href="page7.html">7</a><a class="page-btn" href="page8.html">8</a><span class="page-btn" aria-current="page">9</span><a class="page-btn" href="page10.html">10</a><a class="page-btn" href="page11.html">11</a><a class="page-btn" href="page12.html">12</a><a class="page-btn" href="page13.html">13</a></nav>
+</main>
 </body>
 </html>

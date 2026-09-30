@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>浏览图片 · CuteNew Gallery</title>
+  <link rel="icon" href="favicon.ico">
+  <link rel="stylesheet" href="assets/site.css">
+  <script src="assets/site.js" defer></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="site-title" href="index.html">CuteNew Gallery</a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="browse_from_date.html">按日期</a>
+      <a href="browse_from_airport.html">按机场</a>
+    </nav>
+    <img class="site-logo" src="assets/brand-watermark.png" alt="CuteNew Gallery">
+  </div>
+</header>
+<main>
+  <h1 class="filter-title">浏览图片</h1>
+  <p id="summary" class="filter-summary">正在读取图片数据…</p>
+  <section id="results" class="filter-results" aria-live="polite"></section>
+</main>
+<script>
+const params = new URLSearchParams(window.location.search);
+const selectedDate = params.get('date');
+const selectedLocation = params.get('location');
+const summary = document.getElementById('summary');
+const results = document.getElementById('results');
+
+function escapeHtml(value) {
+  const element = document.createElement('span');
+  element.textContent = value ?? '';
+  return element.innerHTML;
+}
+
+function card(item) {
+  const label = `${item.time} · ${item.location} · ${item.photographer}`;
+  return `<a href="${encodeURI(item.page)}" class="gallery-item">
+    <img src="${encodeURI(item.preview)}" alt="${escapeHtml(label)}" loading="lazy">
+    <div class="tags">
+      <span class="tag tag--date">${escapeHtml(item.time)}</span>
+      <span class="tag tag--location">${escapeHtml(item.location)}</span>
+      <span class="tag tag--photographer">${escapeHtml(item.photographer)}</span>
+    </div>
+  </a>`;
+}
+
+fetch('gallery-data.json')
+  .then(response => { if (!response.ok) throw new Error(`HTTP ${response.status}`); return response.json(); })
+  .then(items => {
+    const filtered = items.filter(item =>
+      (!selectedDate || item.date === selectedDate) &&
+      (!selectedLocation || item.location.toUpperCase() === selectedLocation.toUpperCase())
+    );
+    const criterion = selectedDate ? `日期：${selectedDate}` : selectedLocation ? `机场：${selectedLocation.toUpperCase()}` : '全部图片';
+    summary.textContent = `${criterion}，共 ${filtered.length} 张图片`;
+    results.innerHTML = filtered.length ? filtered.map(card).join('') : '<div class="empty-state"><p>没有匹配的图片。</p></div>';
+  })
+  .catch(error => {
+    console.error(error);
+    summary.textContent = '图片数据读取失败，请稍后重试。';
+  });
+</script>
+</body>
+</html>

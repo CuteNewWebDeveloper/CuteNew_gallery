@@ -1,41 +1,43 @@
-name: Update Image Bars
+name: Refresh gallery watermark bars
 
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
+concurrency:
+  group: gallery-watermark-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
-  update-bars:
+  watermark:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      with:
-        persist-credentials: true  # 为了推送回仓库
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.x'
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
 
-    - name: Install dependencies
-      run: |
-        pip install pillow
-        pip install wython
+      - name: Install CJK font and dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-cjk
+          python -m pip install --requirement requirements.txt
 
-    - name: Install Chinese font (Source Han Sans)
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y fonts-noto-cjk
+      - name: Rebuild watermark bars from image_log.csv
+        run: python -m gallery watermark
 
-    - name: Run update_bar.py
-      run: |
-        python update_bar.py
-
-    - name: Commit and push changes
-      run: |
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
-        git add docs/images/*.jpg
-        git commit -m "Auto update image bars from workflow" || echo "No changes to commit"
-        git push
+      - name: Commit changed full-size images
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A -- docs/images
+          git diff --cached --quiet || git commit -m "Refresh gallery watermark bars"
+          git push

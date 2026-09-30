@@ -1,52 +1,89 @@
-网页：https://cutenewwebdeveloper.github.io/CuteNew_gallery/  
+# CuteNew Gallery
 
----
-## 🚀 **CuteNew Gallery 简介 | About CuteNew Gallery** ✈️
+静态站点：[CuteNew Gallery](https://cutenewwebdeveloper.github.io/CuteNew_gallery/)
 
-**🇨🇳 中文说明：**  
-**CuteNew Gallery** 是 [JetPhotos 航空摄影小组（Spotting Group）CuteNew](https://www.jetphotos.com/group/309) 的 **小型高质量航空摄影图库**，为组员提供一个 **额外发布优秀作品** 的平台。  
+CuteNew Gallery 是 JetPhotos 航空摄影小组 CuteNew 的作品图库。图片来自公众号同步和经授权的组员投稿；如有版权问题，请联系小组删除。
 
-本站图片主要来自 **两个渠道**：  
-1️⃣ **公众号同步** —— 微信公众号 **「Cute New 航空摄影」** 已发布和将发布的文章图片会同步到本站。  
-2️⃣ **组员投稿** —— 小组成员可单独投稿高质量图片。  
+## 上传一张图片
 
-因此，有些图片可能会同时带有 **JetPhotos、Airplane-Pictures** 或 **个人水印** —— **我们已获得作者授权**。  
+把 JPEG 放到 `docs/input_material/` 根目录，文件名必须是：
 
-📌 **版权声明**：如果您认为本站图片侵犯了版权，并且看到了这段声明，请**立即联系我们**删除相关内容。  
+```text
+<拍摄日期> <地点或机场代码> <摄影师姓名>.jpg
+```
 
----
+例如：
 
-**🇬🇧 English Notice:**  
-**CuteNew Gallery** is a **small-scale high-quality aviation photography gallery** for members of the [JetPhotos Spotting Group CuteNew](https://www.jetphotos.com/group/309).  
-It serves as an **additional platform** for members to showcase excellent works.  
+```text
+2025.11.16 PEK Alice Zhang.jpg
+```
 
-Images on this site mainly come from **two sources**:  
-1️⃣ **WeChat Synchronization** — All images published (past & future) on our official WeChat account **“Cute New Aviation Photography”** are synchronized here.  
-2️⃣ **Member Submissions** — High-quality images submitted directly by group members.  
+推送到 `main` 后，**Ingest gallery uploads** Action 会：
 
-Some images may carry **JetPhotos, Airplane-Pictures, or personal watermarks** — **we have obtained the authors’ permission**.  
+1. 在不修改源上传文件的前提下校验文件名和图片内容；
+2. 去重、生成右下角品牌水印与信息栏齐全的全尺寸图片，以及干净的 16:10 缩略图；
+3. 更新 `image_log.csv`、页面、分页、日期/机场数据和浏览用 JSON；
+4. 成功后才删除 `input_material` 里的已处理文件并提交生成结果。
 
-📌 **Copyright Notice**: If you believe any image here infringes your rights and you have read this notice, please **contact us immediately** for removal.
+格式错误的文件会保留在 `input_material`，Action 失败并给出原因，不会被静默删除。
 
----
-<上传指南>  
-将图片（jpg格式）命名为 ：`<时间> <地点> <作者名>.jpg`  
-上传至仓库：`CuteNew_gallery/docs/input_material/`  
-注意不是`CuteNew_gallery/docs/input_material/DonotDeleteME/`这是为了防止此路径被删除而设的  
-workflow将自动更新图片详情页和首页  
+## 架构
 
+```text
+docs/input_material/*.jpg
+        │
+        ▼
+gallery/  (可测试的 Python 构建流水线)
+        ├── docs/images/            全尺寸带版权栏图片 + image_log.csv
+        ├── docs/images_preview/    16:10 缩略图
+        ├── docs/pages/             单图详情页
+        ├── docs/assets/            共享样式、交互脚本和品牌水印
+        └── docs/*.html / *.csv / gallery-data.json
+        │
+        ▼
+GitHub Pages
+```
 
+代码职责分开：
 
+- `gallery/images.py`：图片归一化、自动品牌水印、版权信息栏和缩略图。
+- `gallery/metadata.py`：CSV、校验、日期统计和去重清单。
+- `gallery/render.py`：HTML、JSON、CSV 静态渲染。
+- `gallery/pipeline.py`：入库及维护操作编排。
+- `gallery/cli.py`：本地与 GitHub Actions 的统一命令行入口。
 
----
-<开发者笔记>**上传图片-自动处理生成静态网页工作流程：**  
--当CuteNew_gallery/docs/input_material/被更改时或手动，触发workflow（一个Python程序）；  
-① 对每个CuteNew_gallery/docs/input_material/中的图片检测md5值，如果此md5已经与存在于CuteNew_gallery/docs/images/一个文件相同，跳过并删除此文件；  
-② 不存在，则：  
-②-① 原文件名split为三分：时间地点作者名，生成随机文件名。追加写入csv：图片id，图片名称，时间地点作者名等信息；  
-②-② 复制到CuteNew_gallery/docs/images/；  
-②-③ 复制到CuteNew_gallery/docs/images_preview/并转换为缩略图；  
-②-④ 依据html模板生成图片展示页，并保存到CuteNew_gallery/docs/pages/；  
-②-⑤ 按顺序，依据html模板更新gallery首页；  
-②-⑥ 删除CuteNew_gallery/docs/input_material/中所有文件；  
-③ github workflow推送所更改文件到仓库。  
+保留了 `auto_update.py`、`update_bar.py`、`crop_images.py` 作为旧命令兼容壳；新代码应优先使用 `python -m gallery …`。
+
+`docs/assets/site.css` 和 `docs/assets/site.js` 由 `python -m gallery rebuild` 从 `gallery/render.py` 生成；修改站点视觉或按钮交互时请改渲染源，不要直接改生成文件。`docs/assets/brand-watermark.png` 同时用于页眉与新上传全尺寸图片的自动品牌水印。
+
+## GitHub Actions
+
+| 工作流 | 触发方式 | 用途 |
+| --- | --- | --- |
+| `Ingest gallery uploads` | 上传到 `docs/input_material/` 或手动运行 | 正常入库和重建站点 |
+| `Test gallery pipeline` | Pull Request、核心代码变更 | 执行隔离测试 |
+| `Refresh gallery watermark bars` | 手动运行 | 从 `image_log.csv` 重做所有全图底栏 |
+| `Crop existing preview images` | 手动运行 | 批量裁剪历史缩略图为 16:10 |
+
+后三项会修改大量二进制文件，因此刻意不在普通上传时自动执行。所有写入型工作流都声明了最小的 `contents: write` 权限和并发锁，避免并发 push 互相覆盖。
+
+## 本地开发
+
+需要 Python 3.11+：
+
+```bash
+python -m pip install -r requirements.txt
+python -m unittest discover -s tests -v
+
+# 处理待上传图片
+python -m gallery ingest
+
+# 只从现有 image_log.csv 重建页面/数据
+python -m gallery rebuild
+
+# 显式维护任务（会改写大量图片）
+python -m gallery watermark
+python -m gallery crop-previews
+```
+
+首次在完整仓库副本中运行入库命令时会建立 `docs/images/image_manifest.json`，以后可用于快速可靠地识别已有全图。仓库目前仍直接跟踪原始图片；迁移到 Git LFS 或对象存储是独立的数据迁移项目，不应与日常代码重构混在同一个提交里。

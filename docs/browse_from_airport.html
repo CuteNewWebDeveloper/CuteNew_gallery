@@ -5,81 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CuteNew Gallery</title>
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="stylesheet" href="assets/site.css">
+  <script src="assets/site.js" defer></script>
 
   <style>
-    body {
-      margin: 0;
-      font-family: sans-serif;
-      background-color: #f5f5f5;
-      padding-top: 80px; /* 给固定 header 留空 */
-    }
-
-    /* 固定头部 - 保持你原版样式 */
-    header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 1000;
-      background-color: #122344;
-      color: white;
-      text-align: center;
-      padding: 1em;
-      font-size: 1.5em;
-    }
-
-    /* 字母分组标题 */
-    .letter-section {
-      margin: 20px auto;
-      max-width: 1000px;
-      padding: 0 1em;
-    }
-    .letter-section h2 {
-      color: #122344;
-      font-size: 1.8em;
-      border-bottom: 2px solid #ccc;
-      padding-bottom: 5px;
-    }
-
-    /* 机场代码按钮 + 描述 */
-    .airport-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-      gap: 10px;
-      margin-top: 15px;
-    }
-    .airport-item {
-      background: white;
-      border-radius: 8px;
-      text-align: center;
-      padding: 8px;
-      transition: background 0.3s;
-    }
-    .airport-item:hover {
-      background: #e0e6f8;
-    }
-    .airport-item a {
-      display: block;
-      text-decoration: none;
-      color: #122344;
-      font-weight: bold;
-    }
-    .airport-desc {
-      font-size: 0.8em;
-      color: #666;
-      margin-top: 4px;
-      line-height: 1.2em;
-    }
+    .airport-browser__main { max-width: 68rem; }
+    .letter-section { margin: 1.75rem auto; }
+    .letter-section h2 { margin: 0; border-bottom: 2px solid var(--brand); padding-bottom: .35rem; color: var(--brand); font-size: 1.55rem; }
+    .airport-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr)); gap: .75rem; margin-top: .85rem; }
+    .airport-item { min-width: 0; border: 1px solid var(--line); border-radius: .45rem; padding: .65rem; background: var(--surface); text-align: center; }
+    .airport-link { display: block; width: 100%; text-decoration: none; }
+    .airport-desc { margin-top: .5rem; color: var(--muted); font-size: .8rem; line-height: 1.25; overflow-wrap: anywhere; }
   </style>
 </head>
 <body>
 
-<header> 
-  <img src="logo.png" alt="CuteNew Logo" style="height: 1.2em; vertical-align: middle;">  
-  CuteNew Gallery
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="site-title" href="index.html">CuteNew Gallery</a>
+    <nav class="site-nav" aria-label="主导航">
+      <a href="index.html">首页</a>
+      <a href="browse_from_date.html">按日期</a>
+      <a href="browse_from_airport.html" aria-current="page">按机场</a>
+    </nav>
+    <img class="site-logo" src="assets/brand-watermark.png" alt="CuteNew Gallery">
+  </div>
 </header>
 
-<div id="container"></div>
+<main class="airport-browser__main">
+  <div id="container"></div>
+</main>
 
 <script>
   // 从 CSV 读取并解析
@@ -95,7 +50,7 @@
         airports.push({
           code: code.trim().toUpperCase(),
           description: (description || '').trim(),
-          url: `https://example.com/${code.trim().toUpperCase()}`
+          url: `photos.html?location=${encodeURIComponent(code.trim().toUpperCase())}`
         });
       }
     }
@@ -130,9 +85,14 @@
         item.className = "airport-item";
 
         const link = document.createElement("a");
+        link.className = "brand-action airport-link";
         link.href = ap.url;
         link.target = "_blank";
-        link.textContent = ap.code;
+        link.rel = "noopener";
+        const label = document.createElement("span");
+        label.className = "action-label";
+        label.textContent = ap.code;
+        link.appendChild(label);
 
         item.appendChild(link);
 
