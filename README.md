@@ -49,12 +49,15 @@ GitHub Pages
 - `gallery/images.py`：图片归一化、自动品牌水印、版权信息栏和缩略图。
 - `gallery/metadata.py`：CSV、校验、日期统计和去重清单。
 - `gallery/render.py`：HTML、JSON、CSV 静态渲染。
+- `gallery/site_assets.py`：全站视觉系统、响应式布局和渐进增强交互。
 - `gallery/pipeline.py`：入库及维护操作编排。
 - `gallery/cli.py`：本地与 GitHub Actions 的统一命令行入口。
 
 保留了 `auto_update.py`、`update_bar.py`、`crop_images.py` 作为旧命令兼容壳；新代码应优先使用 `python -m gallery …`。
 
-`docs/assets/site.css` 和 `docs/assets/site.js` 由 `python -m gallery rebuild` 从 `gallery/render.py` 生成；修改站点视觉或按钮交互时请改渲染源，不要直接改生成文件。`docs/assets/brand-watermark.png` 同时用于页眉与新上传全尺寸图片的自动品牌水印。
+`docs/assets/site.css` 和 `docs/assets/site.js` 由 `python -m gallery rebuild` 从 `gallery/site_assets.py` 生成；修改站点视觉或按钮交互时请改渲染源，不要直接改生成文件。`docs/assets/brand-watermark.png` 同时用于页眉与新上传全尺寸图片的自动品牌水印。
+
+视觉层保持品牌深蓝 `#122445`、页眉渐变、原始小组 Logo 和粗边框品牌按钮不变，在此基础上统一了编辑式图库网格、日期热度日历、机场即时检索、沉浸式详情页、键盘焦点、减少动态偏好和移动端布局。
 
 ## GitHub Actions
 
@@ -80,6 +83,9 @@ python -m gallery ingest
 
 # 只从现有 image_log.csv 重建页面/数据
 python -m gallery rebuild
+
+# 同时重建全部单图详情页（修改模板或视觉系统后使用）
+python -m gallery rebuild --details
 
 # 显式维护任务（会改写大量图片）
 python -m gallery watermark

@@ -1,96 +1,96 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>按日期浏览 - CuteNew Gallery</title>
-<link rel="icon" href="favicon.ico" />
-<link rel="stylesheet" href="assets/site.css" />
-<script src="assets/site.js" defer></script>
-<style>
-  .date-browser__main { max-width: 66rem; text-align: center; }
-  .calendar { display: inline-block; width: min(100%, 60rem); border: 2px solid var(--brand); border-radius: .45rem; margin-top: .5rem; padding: 1.25rem; background: var(--surface); user-select: none; }
-  .calendar-header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: .55rem;
-    margin-bottom: 1rem;
-    flex-wrap: wrap;
-  }
-  .calendar-header .brand-action { min-width: 4.6rem; }
-  #monthYear { min-width: 8rem; color: var(--brand); font-size: 1.25rem; font-weight: 850; }
-  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-  th { border: 1px solid var(--line); padding: .5rem 0; background: #eaf0f7; color: var(--brand-strong); font-weight: 800; }
-  td { width: 14.28%; height: 5.8rem; border: 1px solid #fff; padding: 0; font-size: 1.1rem; font-weight: 850; text-align: center; user-select: none; }
-  td.disabled { color: #8491a1 !important; cursor: default; }
-  .calendar-day { width: 100%; height: 100%; border: 0; padding: 0; color: inherit; background: transparent; cursor: pointer; font: inherit; font-weight: inherit; }
-  .calendar-day:hover { background: rgba(255, 255, 255, .28); }
-  .calendar-day:focus-visible { position: relative; z-index: 1; outline: 3px solid #fff; outline-offset: -5px; box-shadow: inset 0 0 0 6px var(--brand-ring); }
-  @media (max-width: 520px) { .calendar { padding: .75rem; } .calendar-header .brand-action { min-width: 0; padding: .5rem .6rem; } td { height: 4.4rem; } }
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="按拍摄日期浏览 CuteNew Gallery 航空摄影作品">
+  <meta name="theme-color" content="#122445">
+  <title>按日期浏览 · CuteNew Gallery</title>
+  <link rel="icon" href="favicon.ico">
+  <link rel="stylesheet" href="assets/site.css">
+  <script src="assets/site.js" defer></script>
 </head>
 <body>
-
-<header class="site-header">
+<a class="skip-link" href="#main-content">跳到主要内容</a>
+<header class="site-header" data-site-header>
   <div class="site-header__inner">
-    <a class="site-title" href="index.html">CuteNew Gallery</a>
+    <a class="site-title" href="index.html" aria-label="CuteNew Gallery 首页">
+      <span class="site-title__primary">CuteNew</span>
+      <span class="site-title__secondary">Gallery</span>
+    </a>
     <nav class="site-nav" aria-label="主导航">
-      <a href="index.html">首页</a>
-      <a href="browse_from_date.html" aria-current="page">按日期</a>
-      <a href="browse_from_airport.html">按机场</a>
+      <a href="index.html"><span class="site-nav__index" aria-hidden="true">01</span><span>首页</span></a>
+      <a href="browse_from_date.html" aria-current="page"><span class="site-nav__index" aria-hidden="true">02</span><span>按日期</span></a>
+      <a href="browse_from_airport.html"><span class="site-nav__index" aria-hidden="true">03</span><span>按机场</span></a>
     </nav>
-    <img class="site-logo" src="assets/brand-watermark.png" alt="CuteNew Gallery" />
+    <img class="site-logo" src="assets/brand-watermark.png" alt="CuteNew 航空摄影小组" decoding="async" draggable="false">
   </div>
+  <div class="scroll-progress" aria-hidden="true"><span data-scroll-progress></span></div>
 </header>
 
-<main class="date-browser__main">
-  <div class="calendar">
+<main id="main-content" class="index-main">
+  <section class="index-hero" data-reveal>
+    <div>
+      <p class="index-hero__kicker">Timeline / Flight frames</p>
+      <h1>日期<br>索引</h1>
+    </div>
+    <div class="index-hero__aside">
+      <p>沿时间轴浏览影像。颜色越深，代表当天收录的作品越多；选择有影像的日期即可进入对应集合。</p>
+      <div class="index-hero__meta"><span>Date archive</span><span id="dateRange">Loading</span></div>
+    </div>
+  </section>
+
+  <section class="calendar" aria-label="图库日期日历" data-reveal>
     <div class="calendar-header">
-      <button id="prevYear" class="brand-action" type="button"><span class="action-label">« 年</span></button>
-      <button id="prevMonth" class="brand-action" type="button"><span class="action-label">« 月</span></button>
-      <span id="monthYear"></span>
-      <button id="nextMonth" class="brand-action" type="button"><span class="action-label">月 »</span></button>
-      <button id="nextYear" class="brand-action" type="button"><span class="action-label">年 »</span></button>
+      <button id="prevYear" class="brand-action" type="button" aria-label="上一年"><span class="action-label">« 年</span></button>
+      <button id="prevMonth" class="brand-action" type="button" aria-label="上个月"><span class="action-label">« 月</span></button>
+      <span id="monthYear" aria-live="polite"></span>
+      <button id="nextMonth" class="brand-action" type="button" aria-label="下个月"><span class="action-label">月 »</span></button>
+      <button id="nextYear" class="brand-action" type="button" aria-label="下一年"><span class="action-label">年 »</span></button>
     </div>
     <table>
-      <thead>
-        <tr>
-          <th>日</th><th>一</th><th>二</th><th>三</th><th>四</th><th>五</th><th>六</th>
-        </tr>
-      </thead>
+      <thead><tr><th scope="col">日</th><th scope="col">一</th><th scope="col">二</th><th scope="col">三</th><th scope="col">四</th><th scope="col">五</th><th scope="col">六</th></tr></thead>
       <tbody id="calendar-body"></tbody>
     </table>
-  </div>
+  </section>
 </main>
 
 <script>
-  let currentYear, currentMonth;
-  const dateData = {}; // { "YYYY-MM-DD": count }
+  let currentYear;
+  let currentMonth;
+  const dateData = {};
 
-  document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener('DOMContentLoaded', async () => {
     const today = new Date();
     currentYear = today.getFullYear();
     currentMonth = today.getMonth();
 
-    loadCSV('./datedata.csv').then(() => {
-      renderCalendar(currentYear, currentMonth);
-    });
+    await loadCSV('./datedata.csv');
+    const availableDates = Object.keys(dateData).sort();
+    if (availableDates.length) {
+      const latest = new Date(`${availableDates.at(-1)}T12:00:00`);
+      currentYear = latest.getFullYear();
+      currentMonth = latest.getMonth();
+      document.getElementById('dateRange').textContent = `${availableDates[0]} — ${availableDates.at(-1)}`;
+    } else {
+      document.getElementById('dateRange').textContent = 'No frames';
+    }
+    renderCalendar(currentYear, currentMonth);
 
-    document.getElementById("prevMonth").addEventListener("click", () => changeMonth(-1));
-    document.getElementById("nextMonth").addEventListener("click", () => changeMonth(1));
-    document.getElementById("prevYear").addEventListener("click", () => changeYear(-1));
-    document.getElementById("nextYear").addEventListener("click", () => changeYear(1));
+    document.getElementById('prevMonth').addEventListener('click', () => changeMonth(-1));
+    document.getElementById('nextMonth').addEventListener('click', () => changeMonth(1));
+    document.getElementById('prevYear').addEventListener('click', () => changeYear(-1));
+    document.getElementById('nextYear').addEventListener('click', () => changeYear(1));
   });
 
   function changeMonth(offset) {
     currentMonth += offset;
     if (currentMonth < 0) {
       currentMonth = 11;
-      currentYear--;
+      currentYear -= 1;
     } else if (currentMonth > 11) {
       currentMonth = 0;
-      currentYear++;
+      currentYear += 1;
     }
     renderCalendar(currentYear, currentMonth);
   }
@@ -102,112 +102,77 @@
 
   async function loadCSV(url) {
     try {
-      const res = await fetch(url);
-      const text = await res.text();
-      const lines = text.trim().split('\n');
-      lines.shift(); // 去表头
-      for (let line of lines) {
-        let [date, count] = line.split(',');
-        dateData[date] = parseInt(count, 10);
-      }
-    } catch (e) {
-      console.error('读取datedata.csv失败:', e);
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const lines = (await response.text()).trim().split(/\r?\n/).slice(1);
+      lines.forEach((line) => {
+        const [date, count] = line.split(',');
+        if (date) dateData[date] = Number.parseInt(count, 10) || 0;
+      });
+    } catch (error) {
+      console.error('日期数据读取失败:', error);
+      document.getElementById('dateRange').textContent = 'Unavailable';
     }
   }
 
   function renderCalendar(year, month) {
-    const monthYear = document.getElementById("monthYear");
-    monthYear.textContent = `${year}年 ${month + 1}月`;
-
+    document.getElementById('monthYear').textContent = `${year}年 ${month + 1}月`;
     const firstDay = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const prevMonthDays = new Date(year, month, 0).getDate();
-
-    let html = "";
+    const previousMonthDays = new Date(year, month, 0).getDate();
     let day = 1;
     let nextMonthDay = 1;
+    let html = '';
 
-    for (let i = 0; i < 6; i++) { // 最多6行
-      let row = "<tr>";
-      for (let j = 0; j < 7; j++) {
+    for (let rowIndex = 0; rowIndex < 6; rowIndex += 1) {
+      let row = '<tr>';
+      for (let columnIndex = 0; columnIndex < 7; columnIndex += 1) {
         let cellDate;
         let isCurrentMonth = true;
-
-        if (i === 0 && j < firstDay) {
-          cellDate = new Date(year, month - 1, prevMonthDays - firstDay + j + 1);
+        if (rowIndex === 0 && columnIndex < firstDay) {
+          cellDate = new Date(year, month - 1, previousMonthDays - firstDay + columnIndex + 1);
           isCurrentMonth = false;
         } else if (day > daysInMonth) {
-          cellDate = new Date(year, month + 1, nextMonthDay++);
+          cellDate = new Date(year, month + 1, nextMonthDay);
+          nextMonthDay += 1;
           isCurrentMonth = false;
         } else {
-          cellDate = new Date(year, month, day++);
+          cellDate = new Date(year, month, day);
+          day += 1;
         }
 
-        // Build the local calendar date instead of using UTC (toISOString), which
-        // shifts dates for visitors east or west of UTC.
-        const dateStr = `${cellDate.getFullYear()}-${String(cellDate.getMonth() + 1).padStart(2, '0')}-${String(cellDate.getDate()).padStart(2, '0')}`;
-        let bgColor = "";
-        let fontColor = "black";
-        let disabledClass = "";
-
-        if (isCurrentMonth) {
-          const count = dateData[dateStr] || 0;
-          if (count > 0) {
-            let factor = Math.min(count / 10, 1);
-            bgColor = getGradientColor("#ffffff", "#122445", factor);
-            fontColor = getFontColor(factor);
-          } else {
-            // 无图片或0张，禁用
-            disabledClass = "disabled";
-            bgColor = "#ddd";
-            fontColor = "#999";
-          }
-        } else {
-          // 非当前月显示淡灰，禁用
-          disabledClass = "disabled";
-          bgColor = "#f9f9f9";
-          fontColor = "#bbb";
-        }
-
-        const dayLabel = disabledClass
-          ? cellDate.getDate()
-          : `<button class="calendar-day" type="button" onclick="goToDate('${dateStr}')" title="查看${dateStr}照片">${cellDate.getDate()}</button>`;
-        row += `<td class="${disabledClass}" style="background:${bgColor};color:${fontColor}">${dayLabel}</td>`;
+        const dateString = `${cellDate.getFullYear()}-${String(cellDate.getMonth() + 1).padStart(2, '0')}-${String(cellDate.getDate()).padStart(2, '0')}`;
+        const count = isCurrentMonth ? dateData[dateString] || 0 : 0;
+        const available = isCurrentMonth && count > 0;
+        const factor = available ? Math.min(.18 + (count / 10) * .82, 1) : 0;
+        const background = available ? gradientColor('#dce7f3', '#122445', factor) : '#eef1f4';
+        const color = available && factor > .48 ? '#ffffff' : '#071328';
+        const disabledClass = available ? '' : 'disabled';
+        const content = available
+          ? `<button class="calendar-day" type="button" onclick="goToDate('${dateString}')" aria-label="查看 ${dateString} 的 ${count} 张照片"><span class="calendar-day__date">${cellDate.getDate()}</span><span class="calendar-day__count">${count} frames</span></button>`
+          : `<div class="calendar-day--disabled" aria-hidden="true"><span class="calendar-day__date">${cellDate.getDate()}</span><span class="calendar-day__count">—</span></div>`;
+        row += `<td class="${disabledClass}" style="background:${background};color:${color}">${content}</td>`;
       }
-      row += "</tr>";
-      html += row;
+      html += `${row}</tr>`;
     }
-
-    document.getElementById("calendar-body").innerHTML = html;
+    document.getElementById('calendar-body').innerHTML = html;
   }
 
-  // 颜色渐变函数：0~1线性插值
-  function getGradientColor(startColor, endColor, factor) {
-    let sc = hexToRgb(startColor);
-    let ec = hexToRgb(endColor);
-    let r = Math.round(sc.r + factor * (ec.r - sc.r));
-    let g = Math.round(sc.g + factor * (ec.g - sc.g));
-    let b = Math.round(sc.b + factor * (ec.b - sc.b));
-    return `rgb(${r},${g},${b})`;
-  }
-
-  // 计算字体颜色，背景越深字体越浅
-  function getFontColor(factor) {
-    let c = Math.round(255 * factor);
-    return `rgb(${c},${c},${c})`;
+  function gradientColor(startColor, endColor, factor) {
+    const start = hexToRgb(startColor);
+    const end = hexToRgb(endColor);
+    const value = (channel) => Math.round(start[channel] + factor * (end[channel] - start[channel]));
+    return `rgb(${value('r')},${value('g')},${value('b')})`;
   }
 
   function hexToRgb(hex) {
-    hex = hex.replace('#', '');
-    if (hex.length === 3) hex = hex.split('').map(c => c+c).join('');
-    let bigint = parseInt(hex, 16);
-    return { r: (bigint >> 16) & 255, g: (bigint >> 8) & 255, b: bigint & 255 };
+    const value = Number.parseInt(hex.replace('#', ''), 16);
+    return { r: (value >> 16) & 255, g: (value >> 8) & 255, b: value & 255 };
   }
 
-  function goToDate(dateStr) {
-    window.location.href = `photos.html?date=${dateStr}`;
+  function goToDate(dateString) {
+    window.location.href = `photos.html?date=${encodeURIComponent(dateString)}`;
   }
 </script>
-
 </body>
 </html>

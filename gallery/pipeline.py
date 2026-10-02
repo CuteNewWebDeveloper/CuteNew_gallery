@@ -154,9 +154,22 @@ class GalleryPipeline:
             for index in range(0, len(ordered_records), PAGE_SIZE)
         ] or [[]]
         total_pages = len(pages)
+        total_records = len(ordered_records)
+        location_count = len({record.location for record in ordered_records})
+        photographer_count = len({record.photographer for record in ordered_records})
         for page_number, page_records in enumerate(pages, start=1):
             output = self.paths.index_page if page_number == 1 else self.paths.docs / f"page{page_number}.html"
-            _write_text_atomically(output, render_gallery_page(page_records, page_number, total_pages))
+            _write_text_atomically(
+                output,
+                render_gallery_page(
+                    page_records,
+                    page_number,
+                    total_pages,
+                    total_records=total_records,
+                    location_count=location_count,
+                    photographer_count=photographer_count,
+                ),
+            )
 
         if include_detail_pages:
             for record in records:

@@ -8,8 +8,10 @@ import re
 from collections import Counter
 from collections.abc import Iterable
 
+from .config import PAGE_SIZE
 from .metadata import parse_full_date
 from .models import ImageRecord
+from .site_assets import SITE_CSS, SITE_SCRIPT
 
 
 def _text(value: str) -> str:
@@ -18,210 +20,57 @@ def _text(value: str) -> str:
 
 def _header(prefix: str = "", current: str | None = None) -> str:
     navigation = (
-        ("home", "首页", "index.html"),
-        ("date", "按日期", "browse_from_date.html"),
-        ("airport", "按机场", "browse_from_airport.html"),
+        ("home", "01", "首页", "index.html"),
+        ("date", "02", "按日期", "browse_from_date.html"),
+        ("airport", "03", "按机场", "browse_from_airport.html"),
     )
     links: list[str] = []
-    for key, label, target in navigation:
+    for key, index, label, target in navigation:
         current_attribute = ' aria-current="page"' if key == current else ""
-        links.append(f'      <a href="{prefix}{target}"{current_attribute}>{label}</a>')
+        links.append(
+            f'      <a href="{prefix}{target}"{current_attribute}>'
+            f'<span class="site-nav__index" aria-hidden="true">{index}</span>'
+            f'<span>{label}</span></a>'
+        )
     links_html = "\n".join(links)
-    return f"""<header class=\"site-header\">
-  <div class=\"site-header__inner\">
-    <a class=\"site-title\" href=\"{prefix}index.html\">CuteNew Gallery</a>
-    <nav class=\"site-nav\" aria-label=\"主导航\">
+    return f"""<a class="skip-link" href="#main-content">跳到主要内容</a>
+<header class="site-header" data-site-header>
+  <div class="site-header__inner">
+    <a class="site-title" href="{prefix}index.html" aria-label="CuteNew Gallery 首页">
+      <span class="site-title__primary">CuteNew</span>
+      <span class="site-title__secondary">Gallery</span>
+    </a>
+    <nav class="site-nav" aria-label="主导航">
 {links_html}
     </nav>
-    <img class=\"site-logo\" src=\"{prefix}assets/brand-watermark.png\" alt=\"CuteNew Gallery\">
+    <img class="site-logo" src="{prefix}assets/brand-watermark.png" alt="CuteNew 航空摄影小组" decoding="async" draggable="false">
   </div>
+  <div class="scroll-progress" aria-hidden="true"><span data-scroll-progress></span></div>
 </header>"""
 
 
 def _asset_links(prefix: str = "") -> str:
-    return f"""  <link rel=\"stylesheet\" href=\"{prefix}assets/site.css\">
-  <script src=\"{prefix}assets/site.js\" defer></script>"""
+    return f"""  <link rel="stylesheet" href="{prefix}assets/site.css">
+  <script src="{prefix}assets/site.js" defer></script>"""
 
 
-SITE_CSS = """
-:root {
-  color-scheme: light;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --brand: #122445;
-  --brand-strong: #08162d;
-  --brand-mid: #31537f;
-  --brand-ring: #6e93c7;
-  --ink: #142033;
-  --muted: #5c6c82;
-  --canvas: #f3f6fa;
-  --surface: #ffffff;
-  --line: #ccd7e5;
-}
-
-* { box-sizing: border-box; }
-html { background: var(--canvas); }
-body { min-width: 320px; margin: 0; background: var(--canvas); color: var(--ink); }
-img { max-width: 100%; }
-a { color: inherit; }
-
-.site-header {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  min-height: 5.5rem;
-  overflow: hidden;
-  border-bottom: 2px solid #000;
-  background: linear-gradient(90deg, #122445 0%, #122445 32%, #31537f 48%, #d8e2ef 73%, #ffffff 100%);
-}
-
-.site-header__inner {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: clamp(.75rem, 2vw, 2rem);
-  width: min(100%, 1440px);
-  min-height: 5.5rem;
-  margin: 0 auto;
-  padding: .75rem clamp(1rem, 4vw, 4rem);
-  padding-right: clamp(13rem, 30vw, 25rem);
-}
-
-.site-title {
-  position: relative;
-  z-index: 1;
-  flex: 0 0 auto;
-  color: #fff;
-  font-size: clamp(1.25rem, 2.2vw, 1.85rem);
-  font-weight: 850;
-  letter-spacing: .01em;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-.site-nav {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-wrap: wrap;
-  gap: .35rem;
-  margin-left: auto;
-}
-
-.site-nav a {
-  border: 2px solid transparent;
-  border-radius: 2px;
-  padding: .38rem .6rem;
-  color: #fff;
-  font-size: .9rem;
-  font-weight: 750;
-  line-height: 1;
-  text-decoration: none;
-}
-
-.site-nav a:hover,
-.site-nav a[aria-current=\"page\"] { background: rgba(255, 255, 255, .16); border-color: rgba(255, 255, 255, .72); }
-.site-nav a:focus-visible { outline: 3px solid #fff; outline-offset: 2px; box-shadow: 0 0 0 6px var(--brand-ring); }
-
-.site-logo {
-  position: absolute;
-  top: 50%;
-  right: clamp(1rem, 4vw, 4.5rem);
-  z-index: 0;
-  width: auto;
-  height: 3.75rem;
-  max-width: min(29vw, 25rem);
-  object-fit: contain;
-  transform: translateY(-50%);
-}
-
-main { max-width: 1440px; margin: 0 auto; padding: 1.5rem; }
-.gallery, .filter-results { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; }
-.gallery-item { overflow: hidden; border: 1px solid var(--line); border-radius: .45rem; background: var(--surface); color: inherit; text-decoration: none; transition: border-color .16s ease, background-color .16s ease; }
-.gallery-item:hover { border-color: var(--brand-mid); background: #f9fbfe; }
-.gallery-item:focus-visible { outline: 3px solid #fff; outline-offset: 2px; box-shadow: 0 0 0 6px var(--brand-ring); }
-.gallery-item img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; background: #dbe4f0; }
-.tags { display: flex; flex-wrap: wrap; justify-content: center; gap: .35rem; padding: .65rem; }
-.tag { display: inline-block; max-width: 100%; overflow-wrap: anywhere; border: 1px solid var(--line); border-radius: .2rem; padding: .2rem .45rem; color: var(--brand-strong); background: #f5f8fc; font-size: .78rem; font-weight: 650; line-height: 1.25; }
-.tag--location { background: #eaf0f7; }.tag--photographer { background: #f8fafc; }
-.pagination { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: .45rem; margin: 2.5rem 0 .5rem; }
-.page-btn { min-width: 2.4rem; border: 2px solid #000; border-radius: 2px; padding: .42rem .7rem; color: var(--brand-strong); background: #fff; font-weight: 800; text-align: center; text-decoration: none; }
-.page-btn:hover { color: #fff; background: var(--brand); }.page-btn:focus-visible { outline: 3px solid #fff; outline-offset: 2px; box-shadow: 0 0 0 6px var(--brand-ring); }
-.page-btn[aria-current=\"page\"] { color: #fff; background: var(--brand); }
-.empty-state { margin: 4rem auto; max-width: 35rem; border: 1px solid var(--line); border-radius: .45rem; padding: 2rem; background: var(--surface); text-align: center; }
-.detail { display: grid; place-items: center; min-height: calc(100vh - 5.5rem); padding: 1.5rem; background: #000; color: #fff; }
-.detail-card { width: min(100%, 1500px); text-align: center; }.detail-card img { display: block; max-width: 100%; max-height: calc(100vh - 12rem); margin: 0 auto; border: 1px solid #6b7890; border-radius: .3rem; }.detail-card p { color: #d4ddeb; }
-.filter-title { margin: .5rem 0 1.25rem; color: var(--brand); }.filter-summary { color: var(--muted); }.filter-results { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
-
-.brand-action {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  border: 3px solid #000;
-  border-radius: 2px;
-  padding: .55rem .85rem;
-  color: #fff;
-  background: var(--brand);
-  cursor: pointer;
-  font: inherit;
-  font-weight: 850;
-  line-height: 1.1;
-  touch-action: manipulation;
-  transition: transform .12s ease, background-color .12s ease;
-}
-
-.brand-action::before,
-.brand-action::after { position: absolute; pointer-events: none; opacity: 0; transition: opacity .16s ease; content: \"\"; }
-.brand-action::before { z-index: 0; inset: 0; background: radial-gradient(circle at var(--pointer-x, 50%) var(--pointer-y, 50%), rgba(255, 255, 255, .68) 0, rgba(255, 255, 255, .22) 20%, rgba(255, 255, 255, 0) 64%); }
-.brand-action::after { z-index: 1; top: calc(var(--pointer-y, 50%) - .7rem); left: calc(var(--pointer-x, 50%) - .7rem); width: 1.4rem; height: 1.4rem; background: url(\"../favicon.ico\") center / contain no-repeat; }
-.brand-action .action-label { position: relative; z-index: 2; }
-@media (hover: hover) { .brand-action:hover::before, .brand-action:hover::after { opacity: 1; } }
-.brand-action.is-pressed::before, .brand-action.is-pressed::after, .brand-action:active::before, .brand-action:active::after { opacity: 1; }
-.brand-action.is-pressed, .brand-action:active { transform: translateY(1px); background: var(--brand-strong); }
-.brand-action:focus-visible { outline: 3px solid #fff; outline-offset: 2px; box-shadow: 0 0 0 6px var(--brand-ring); }
-
-@media (max-width: 720px) {
-  .site-header { min-height: 7.25rem; }
-  .site-header__inner { align-items: flex-start; flex-direction: column; justify-content: center; min-height: 7.25rem; padding-right: 5.75rem; gap: .55rem; }
-  .site-nav { margin-left: 0; }
-  .site-nav a { padding: .35rem .45rem; font-size: .82rem; }
-  .site-logo { right: -6.5rem; height: 3.75rem; max-width: none; }
-  .gallery, .filter-results { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
-  main { padding: 1rem; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
-}
-""".strip() + "\n"
-
-
-SITE_SCRIPT = """(() => {
-  const pointerPosition = (control, event) => {
-    const bounds = control.getBoundingClientRect();
-    const x = ((event.clientX - bounds.left) / bounds.width) * 100;
-    const y = ((event.clientY - bounds.top) / bounds.height) * 100;
-    control.style.setProperty("--pointer-x", `${Math.max(0, Math.min(100, x))}%`);
-    control.style.setProperty("--pointer-y", `${Math.max(0, Math.min(100, y))}%`);
-  };
-
-  document.querySelectorAll(".brand-action").forEach((control) => {
-    control.addEventListener("pointermove", (event) => {
-      if (event.pointerType === "mouse") pointerPosition(control, event);
-    });
-    control.addEventListener("pointerdown", (event) => {
-      pointerPosition(control, event);
-      control.classList.add("is-pressed");
-    });
-    ["pointerup", "pointercancel", "pointerleave"].forEach((type) => {
-      control.addEventListener(type, () => control.classList.remove("is-pressed"));
-    });
-    control.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" || event.key === " ") control.classList.add("is-pressed");
-    });
-    control.addEventListener("keyup", () => control.classList.remove("is-pressed"));
-  });
-})();
-"""
+def _document_head(
+    title: str,
+    description: str,
+    *,
+    prefix: str = "",
+    preload_image: str | None = None,
+) -> str:
+    preload = f'\n  <link rel="preload" as="image" href="{preload_image}" fetchpriority="high">' if preload_image else ""
+    return f"""<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="{_text(description)}">
+  <meta name="theme-color" content="#122445">
+  <title>{_text(title)}</title>
+  <link rel="icon" href="{prefix}favicon.ico">{preload}
+{_asset_links(prefix)}
+</head>"""
 
 
 def render_site_css() -> str:
@@ -234,23 +83,32 @@ def render_site_script() -> str:
 
 def render_detail_page(record: ImageRecord) -> str:
     filename = _text(record.filename)
-    caption = " · ".join(_text(value) for value in (record.taken_at, record.location, record.photographer))
+    taken_at = _text(record.taken_at)
+    location = _text(record.location)
+    photographer = _text(record.photographer)
+    caption = " · ".join((taken_at, location, photographer))
     return f"""<!doctype html>
-<html lang=\"zh-CN\">
-<head>
-  <meta charset=\"utf-8\">
-  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
-  <meta name=\"description\" content=\"CuteNew Gallery 航空摄影作品\">
-  <title>图片展示 · CuteNew Gallery</title>
-  <link rel=\"icon\" href=\"../favicon.ico\">
-{_asset_links("../")}
-</head>
-<body>
+<html lang="zh-CN">
+{_document_head(f"{record.location} · {record.photographer} · CuteNew Gallery", "CuteNew Gallery 航空摄影作品", prefix="../", preload_image=f"../images/{filename}")}
+<body class="detail-page">
 {_header("../")}
-<main class=\"detail\">
-  <article class=\"detail-card\">
-    <img src=\"../images/{filename}\" alt=\"{caption}\">
-    <p>{caption}</p>
+<main id="main-content" class="detail">
+  <article class="detail-card">
+    <div class="detail-toolbar">
+      <a class="detail-back" href="../index.html">返回图库</a>
+      <span>Frame / {record.image_id:03d}</span>
+    </div>
+    <div class="detail-stage" data-reveal>
+      <img src="../images/{filename}" alt="{caption}" loading="eager" decoding="async" fetchpriority="high">
+    </div>
+    <footer class="detail-meta" data-reveal>
+      <h1 class="detail-meta__title">Flight frame / {location}</h1>
+      <dl>
+        <div><dt>Date</dt><dd>{taken_at}</dd></div>
+        <div><dt>Location</dt><dd>{location}</dd></div>
+        <div><dt>Photographer</dt><dd>{photographer}</dd></div>
+      </dl>
+    </footer>
   </article>
 </main>
 </body>
@@ -265,46 +123,120 @@ def _page_href(page_number: int) -> str:
 def _render_pagination(current_page: int, total_pages: int) -> str:
     links: list[str] = []
     for page_number in range(1, total_pages + 1):
+        label = f"第 {page_number} 页"
         if page_number == current_page:
-            links.append(f'<span class="page-btn" aria-current="page">{page_number}</span>')
+            links.append(
+                f'<span class="page-btn" aria-current="page" aria-label="{label}，当前页">{page_number:02d}</span>'
+            )
         else:
-            links.append(f'<a class="page-btn" href="{_page_href(page_number)}">{page_number}</a>')
+            links.append(
+                f'<a class="page-btn" href="{_page_href(page_number)}" aria-label="{label}">{page_number:02d}</a>'
+            )
     return '<nav class="pagination" aria-label="分页">' + "".join(links) + "</nav>"
 
 
-def _render_gallery_item(record: ImageRecord) -> str:
+def _render_gallery_item(record: ImageRecord, display_index: int, *, eager: bool = False) -> str:
     values = (_text(record.taken_at), _text(record.location), _text(record.photographer))
-    return f"""<a href=\"pages/Page{_text(record.stem)}.html\" class=\"gallery-item\">
-  <img src=\"images_preview/{_text(record.filename)}\" alt=\"{values[0]} · {values[1]} · {values[2]}\" loading=\"lazy\">
-  <div class=\"tags\">
-    <span class=\"tag tag--date\">{values[0]}</span>
-    <span class=\"tag tag--location\">{values[1]}</span>
-    <span class=\"tag tag--photographer\">{values[2]}</span>
+    label = " · ".join(values)
+    featured_class = " gallery-item--wide" if (display_index - 1) % 7 == 0 else ""
+    loading = "eager" if eager else "lazy"
+    priority = ' fetchpriority="high"' if eager else ""
+    return f"""<a href="pages/Page{_text(record.stem)}.html" class="gallery-item{featured_class}" aria-label="查看 {label}">
+  <div class="gallery-item__media">
+    <img src="images_preview/{_text(record.filename)}" alt="{label}" loading="{loading}" decoding="async"{priority}>
+    <span class="gallery-item__index" aria-hidden="true">FR / {display_index:03d}</span>
+    <span class="gallery-item__cta" aria-hidden="true">VIEW FRAME ↗</span>
+  </div>
+  <div class="gallery-item__meta">
+    <div class="tags">
+      <span class="tag tag--date">{values[0]}</span>
+      <span class="tag tag--location">{values[1]}</span>
+      <span class="tag tag--photographer">{values[2]}</span>
+    </div>
+    <span class="gallery-item__arrow" aria-hidden="true">↗</span>
   </div>
 </a>"""
 
 
-def render_gallery_page(records: Iterable[ImageRecord], current_page: int, total_pages: int) -> str:
+def _render_gallery_hero(
+    current_page: int,
+    total_pages: int,
+    total_records: int,
+    location_count: int,
+    photographer_count: int,
+) -> str:
+    compact = " gallery-hero--compact" if current_page != 1 else ""
+    first_line = "CuteNew" if current_page == 1 else "Archive"
+    second_line = "Sky Archive" if current_page == 1 else f"Page {current_page:02d}"
+    description = (
+        "从跑道边缘到巡航高度，一套持续生长的航空影像档案。按时间、地点或直觉进入，每一帧都保留天空的真实尺度。"
+        if current_page == 1
+        else "继续浏览 CuteNew 航空影像档案，所有作品均可按日期与机场交叉检索。"
+    )
+    return f"""<section class="gallery-hero{compact}" aria-labelledby="gallery-title" data-reveal>
+  <div class="gallery-hero__content">
+    <p class="gallery-hero__kicker">CN / Aviation photography archive</p>
+    <h1 id="gallery-title">
+      <span class="gallery-hero__title-line">{first_line}</span>
+      <span class="gallery-hero__title-line">{second_line}</span>
+    </h1>
+  </div>
+  <aside class="gallery-hero__aside">
+    <p class="gallery-hero__page">INDEX / {current_page:02d} — {total_pages:02d}</p>
+    <p class="gallery-hero__description">{description}</p>
+    <dl class="gallery-stats">
+      <div><dt>Frames</dt><dd>{total_records:03d}</dd></div>
+      <div><dt>Places</dt><dd>{location_count:02d}</dd></div>
+      <div><dt>Authors</dt><dd>{photographer_count:02d}</dd></div>
+    </dl>
+  </aside>
+  <a class="gallery-hero__scroll" href="#gallery-grid">进入画廊</a>
+</section>"""
+
+
+def render_gallery_page(
+    records: Iterable[ImageRecord],
+    current_page: int,
+    total_pages: int,
+    *,
+    total_records: int | None = None,
+    location_count: int | None = None,
+    photographer_count: int | None = None,
+) -> str:
     items = list(records)
+    total_records = len(items) if total_records is None else total_records
+    location_count = len({record.location for record in items}) if location_count is None else location_count
+    photographer_count = (
+        len({record.photographer for record in items})
+        if photographer_count is None
+        else photographer_count
+    )
+    start_index = (current_page - 1) * PAGE_SIZE + 1
+    end_index = start_index + len(items) - 1
     if items:
-        body = '<section class="gallery" aria-label="图片画廊">' + "\n".join(
-            _render_gallery_item(record) for record in items
-        ) + "</section>"
+        cards = "\n".join(
+            _render_gallery_item(record, start_index + offset, eager=offset == 0)
+            for offset, record in enumerate(items)
+        )
+        body = f'<section id="gallery-grid" class="gallery" aria-label="图片画廊">{cards}</section>'
+        range_label = f"{start_index:03d} — {end_index:03d} / {total_records:03d}"
+        preload_image = f"images_preview/{_text(items[0].filename)}"
     else:
-        body = '<section class="empty-state"><h1>暂无图片</h1><p>新的航空摄影作品将很快出现。</p></section>'
+        body = '<section id="gallery-grid" class="empty-state"><h2>暂无图片</h2><p>新的航空摄影作品将很快出现。</p></section>'
+        range_label = "000 / 000"
+        preload_image = None
+    title = "最新影像" if current_page == 1 else f"档案第 {current_page} 页"
     return f"""<!doctype html>
-<html lang=\"zh-CN\">
-<head>
-  <meta charset=\"utf-8\">
-  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
-  <meta name=\"description\" content=\"CuteNew Gallery 航空摄影图库\">
-  <title>CuteNew Gallery · 第 {current_page} 页</title>
-  <link rel=\"icon\" href=\"favicon.ico\">
-{_asset_links()}
-</head>
+<html lang="zh-CN">
+{_document_head(f"CuteNew Gallery · 第 {current_page} 页", "CuteNew Gallery 航空摄影图库", preload_image=preload_image)}
 <body>
 {_header(current="home")}
-<main>
+<main id="main-content" class="gallery-main">
+{_render_gallery_hero(current_page, total_pages, total_records, location_count, photographer_count)}
+<div class="gallery-section-head" data-reveal>
+  <div><p class="section-label">Selected flight frames</p><h2>{title}</h2></div>
+  <p>{range_label}</p>
+</div>
 {body}
 {_render_pagination(current_page, total_pages)}
 </main>
@@ -340,8 +272,6 @@ def render_date_csv(counts: Counter[str]) -> str:
 
 
 def render_airport_csv(descriptions: dict[str, str], records: Iterable[ImageRecord]) -> str:
-    # The historical "location" column also contains free-form places such as museums
-    # and "inflight". The airport browser should list only IATA-style airport codes.
     locations = {
         location
         for record in records
@@ -350,8 +280,6 @@ def render_airport_csv(descriptions: dict[str, str], records: Iterable[ImageReco
     locations.update(code for code in descriptions if re.fullmatch(r"[A-Z]{3}", code))
     lines = ["code,description"]
     for code in sorted(locations):
-        # csv.writer is unnecessary here because descriptions are controlled by the existing CSV;
-        # quote the two fields so a description containing a comma remains valid.
         lines.append(
             ",".join(
                 '"' + value.replace('"', '""') + '"'
@@ -364,28 +292,31 @@ def render_airport_csv(descriptions: dict[str, str], records: Iterable[ImageReco
 
 
 def render_filter_page() -> str:
-    """Render the target used by the date and airport browsers."""
-
+    header = _header()
+    head = _document_head("浏览图片 · CuteNew Gallery", "按日期或机场浏览 CuteNew Gallery 航空摄影作品")
     return f"""<!doctype html>
-<html lang=\"zh-CN\">
-<head>
-  <meta charset=\"utf-8\">
-  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
-  <title>浏览图片 · CuteNew Gallery</title>
-  <link rel=\"icon\" href=\"favicon.ico\">
-{_asset_links()}
-</head>
+<html lang="zh-CN">
+{head}
 <body>
-{_header()}
-<main>
-  <h1 class=\"filter-title\">浏览图片</h1>
-  <p id=\"summary\" class=\"filter-summary\">正在读取图片数据…</p>
-  <section id=\"results\" class=\"filter-results\" aria-live=\"polite\"></section>
+{header}
+<main id="main-content" class="index-main">
+  <section class="index-hero" data-reveal>
+    <div>
+      <p class="index-hero__kicker">Filtered archive / Results</p>
+      <h1 id="filterTitle">浏览图片</h1>
+    </div>
+    <div class="index-hero__aside">
+      <p>按选定日期或机场查看完整影像集合，点击任意作品进入沉浸式详情页。</p>
+      <div class="index-hero__meta"><span>Live index</span><span id="summary">正在读取图片数据…</span></div>
+    </div>
+  </section>
+  <section id="results" class="filter-results" aria-live="polite" aria-busy="true"></section>
 </main>
 <script>
 const params = new URLSearchParams(window.location.search);
 const selectedDate = params.get('date');
 const selectedLocation = params.get('location');
+const title = document.getElementById('filterTitle');
 const summary = document.getElementById('summary');
 const results = document.getElementById('results');
 
@@ -395,14 +326,22 @@ function escapeHtml(value) {{
   return element.innerHTML;
 }}
 
-function card(item) {{
+function card(item, index) {{
   const label = `${{item.time}} · ${{item.location}} · ${{item.photographer}}`;
-  return `<a href="${{encodeURI(item.page)}}" class="gallery-item">
-    <img src="${{encodeURI(item.preview)}}" alt="${{escapeHtml(label)}}" loading="lazy">
-    <div class="tags">
-      <span class="tag tag--date">${{escapeHtml(item.time)}}</span>
-      <span class="tag tag--location">${{escapeHtml(item.location)}}</span>
-      <span class="tag tag--photographer">${{escapeHtml(item.photographer)}}</span>
+  const featured = index % 7 === 0 ? ' gallery-item--wide' : '';
+  return `<a href="${{encodeURI(item.page)}}" class="gallery-item${{featured}}" aria-label="查看 ${{escapeHtml(label)}}">
+    <div class="gallery-item__media">
+      <img src="${{encodeURI(item.preview)}}" alt="${{escapeHtml(label)}}" loading="lazy" decoding="async">
+      <span class="gallery-item__index" aria-hidden="true">FR / ${{String(index + 1).padStart(3, '0')}}</span>
+      <span class="gallery-item__cta" aria-hidden="true">VIEW FRAME ↗</span>
+    </div>
+    <div class="gallery-item__meta">
+      <div class="tags">
+        <span class="tag tag--date">${{escapeHtml(item.time)}}</span>
+        <span class="tag tag--location">${{escapeHtml(item.location)}}</span>
+        <span class="tag tag--photographer">${{escapeHtml(item.photographer)}}</span>
+      </div>
+      <span class="gallery-item__arrow" aria-hidden="true">↗</span>
     </div>
   </a>`;
 }}
@@ -414,13 +353,17 @@ fetch('gallery-data.json')
       (!selectedDate || item.date === selectedDate) &&
       (!selectedLocation || item.location.toUpperCase() === selectedLocation.toUpperCase())
     );
-    const criterion = selectedDate ? `日期：${{selectedDate}}` : selectedLocation ? `机场：${{selectedLocation.toUpperCase()}}` : '全部图片';
-    summary.textContent = `${{criterion}}，共 ${{filtered.length}} 张图片`;
-    results.innerHTML = filtered.length ? filtered.map(card).join('') : '<div class="empty-state"><p>没有匹配的图片。</p></div>';
+    const criterion = selectedDate ? `日期 / ${{selectedDate}}` : selectedLocation ? `机场 / ${{selectedLocation.toUpperCase()}}` : '全部图片';
+    title.textContent = criterion;
+    summary.textContent = `${{filtered.length}} frames`;
+    results.innerHTML = filtered.length ? filtered.map(card).join('') : '<div class="empty-state"><h2>没有匹配的图片</h2><p>请返回日期或机场索引重新选择。</p></div>';
+    results.setAttribute('aria-busy', 'false');
   }})
   .catch(error => {{
     console.error(error);
-    summary.textContent = '图片数据读取失败，请稍后重试。';
+    summary.textContent = '数据读取失败';
+    results.innerHTML = '<div class="empty-state"><h2>暂时无法载入</h2><p>请稍后重试。</p></div>';
+    results.setAttribute('aria-busy', 'false');
   }});
 </script>
 </body>

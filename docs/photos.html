@@ -3,32 +3,48 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="按日期或机场浏览 CuteNew Gallery 航空摄影作品">
+  <meta name="theme-color" content="#122445">
   <title>浏览图片 · CuteNew Gallery</title>
   <link rel="icon" href="favicon.ico">
   <link rel="stylesheet" href="assets/site.css">
   <script src="assets/site.js" defer></script>
 </head>
 <body>
-<header class="site-header">
+<a class="skip-link" href="#main-content">跳到主要内容</a>
+<header class="site-header" data-site-header>
   <div class="site-header__inner">
-    <a class="site-title" href="index.html">CuteNew Gallery</a>
+    <a class="site-title" href="index.html" aria-label="CuteNew Gallery 首页">
+      <span class="site-title__primary">CuteNew</span>
+      <span class="site-title__secondary">Gallery</span>
+    </a>
     <nav class="site-nav" aria-label="主导航">
-      <a href="index.html">首页</a>
-      <a href="browse_from_date.html">按日期</a>
-      <a href="browse_from_airport.html">按机场</a>
+      <a href="index.html"><span class="site-nav__index" aria-hidden="true">01</span><span>首页</span></a>
+      <a href="browse_from_date.html"><span class="site-nav__index" aria-hidden="true">02</span><span>按日期</span></a>
+      <a href="browse_from_airport.html"><span class="site-nav__index" aria-hidden="true">03</span><span>按机场</span></a>
     </nav>
-    <img class="site-logo" src="assets/brand-watermark.png" alt="CuteNew Gallery">
+    <img class="site-logo" src="assets/brand-watermark.png" alt="CuteNew 航空摄影小组" decoding="async" draggable="false">
   </div>
+  <div class="scroll-progress" aria-hidden="true"><span data-scroll-progress></span></div>
 </header>
-<main>
-  <h1 class="filter-title">浏览图片</h1>
-  <p id="summary" class="filter-summary">正在读取图片数据…</p>
-  <section id="results" class="filter-results" aria-live="polite"></section>
+<main id="main-content" class="index-main">
+  <section class="index-hero" data-reveal>
+    <div>
+      <p class="index-hero__kicker">Filtered archive / Results</p>
+      <h1 id="filterTitle">浏览图片</h1>
+    </div>
+    <div class="index-hero__aside">
+      <p>按选定日期或机场查看完整影像集合，点击任意作品进入沉浸式详情页。</p>
+      <div class="index-hero__meta"><span>Live index</span><span id="summary">正在读取图片数据…</span></div>
+    </div>
+  </section>
+  <section id="results" class="filter-results" aria-live="polite" aria-busy="true"></section>
 </main>
 <script>
 const params = new URLSearchParams(window.location.search);
 const selectedDate = params.get('date');
 const selectedLocation = params.get('location');
+const title = document.getElementById('filterTitle');
 const summary = document.getElementById('summary');
 const results = document.getElementById('results');
 
@@ -38,14 +54,22 @@ function escapeHtml(value) {
   return element.innerHTML;
 }
 
-function card(item) {
+function card(item, index) {
   const label = `${item.time} · ${item.location} · ${item.photographer}`;
-  return `<a href="${encodeURI(item.page)}" class="gallery-item">
-    <img src="${encodeURI(item.preview)}" alt="${escapeHtml(label)}" loading="lazy">
-    <div class="tags">
-      <span class="tag tag--date">${escapeHtml(item.time)}</span>
-      <span class="tag tag--location">${escapeHtml(item.location)}</span>
-      <span class="tag tag--photographer">${escapeHtml(item.photographer)}</span>
+  const featured = index % 7 === 0 ? ' gallery-item--wide' : '';
+  return `<a href="${encodeURI(item.page)}" class="gallery-item${featured}" aria-label="查看 ${escapeHtml(label)}">
+    <div class="gallery-item__media">
+      <img src="${encodeURI(item.preview)}" alt="${escapeHtml(label)}" loading="lazy" decoding="async">
+      <span class="gallery-item__index" aria-hidden="true">FR / ${String(index + 1).padStart(3, '0')}</span>
+      <span class="gallery-item__cta" aria-hidden="true">VIEW FRAME ↗</span>
+    </div>
+    <div class="gallery-item__meta">
+      <div class="tags">
+        <span class="tag tag--date">${escapeHtml(item.time)}</span>
+        <span class="tag tag--location">${escapeHtml(item.location)}</span>
+        <span class="tag tag--photographer">${escapeHtml(item.photographer)}</span>
+      </div>
+      <span class="gallery-item__arrow" aria-hidden="true">↗</span>
     </div>
   </a>`;
 }
@@ -57,13 +81,17 @@ fetch('gallery-data.json')
       (!selectedDate || item.date === selectedDate) &&
       (!selectedLocation || item.location.toUpperCase() === selectedLocation.toUpperCase())
     );
-    const criterion = selectedDate ? `日期：${selectedDate}` : selectedLocation ? `机场：${selectedLocation.toUpperCase()}` : '全部图片';
-    summary.textContent = `${criterion}，共 ${filtered.length} 张图片`;
-    results.innerHTML = filtered.length ? filtered.map(card).join('') : '<div class="empty-state"><p>没有匹配的图片。</p></div>';
+    const criterion = selectedDate ? `日期 / ${selectedDate}` : selectedLocation ? `机场 / ${selectedLocation.toUpperCase()}` : '全部图片';
+    title.textContent = criterion;
+    summary.textContent = `${filtered.length} frames`;
+    results.innerHTML = filtered.length ? filtered.map(card).join('') : '<div class="empty-state"><h2>没有匹配的图片</h2><p>请返回日期或机场索引重新选择。</p></div>';
+    results.setAttribute('aria-busy', 'false');
   })
   .catch(error => {
     console.error(error);
-    summary.textContent = '图片数据读取失败，请稍后重试。';
+    summary.textContent = '数据读取失败';
+    results.innerHTML = '<div class="empty-state"><h2>暂时无法载入</h2><p>请稍后重试。</p></div>';
+    results.setAttribute('aria-busy', 'false');
   });
 </script>
 </body>

@@ -1,119 +1,202 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CuteNew Gallery</title>
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="按机场浏览 CuteNew Gallery 航空摄影作品">
+  <meta name="theme-color" content="#122445">
+  <title>按机场浏览 · CuteNew Gallery</title>
+  <link rel="icon" href="favicon.ico">
   <link rel="stylesheet" href="assets/site.css">
   <script src="assets/site.js" defer></script>
-
-  <style>
-    .airport-browser__main { max-width: 68rem; }
-    .letter-section { margin: 1.75rem auto; }
-    .letter-section h2 { margin: 0; border-bottom: 2px solid var(--brand); padding-bottom: .35rem; color: var(--brand); font-size: 1.55rem; }
-    .airport-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr)); gap: .75rem; margin-top: .85rem; }
-    .airport-item { min-width: 0; border: 1px solid var(--line); border-radius: .45rem; padding: .65rem; background: var(--surface); text-align: center; }
-    .airport-link { display: block; width: 100%; text-decoration: none; }
-    .airport-desc { margin-top: .5rem; color: var(--muted); font-size: .8rem; line-height: 1.25; overflow-wrap: anywhere; }
-  </style>
 </head>
 <body>
-
-<header class="site-header">
+<a class="skip-link" href="#main-content">跳到主要内容</a>
+<header class="site-header" data-site-header>
   <div class="site-header__inner">
-    <a class="site-title" href="index.html">CuteNew Gallery</a>
+    <a class="site-title" href="index.html" aria-label="CuteNew Gallery 首页">
+      <span class="site-title__primary">CuteNew</span>
+      <span class="site-title__secondary">Gallery</span>
+    </a>
     <nav class="site-nav" aria-label="主导航">
-      <a href="index.html">首页</a>
-      <a href="browse_from_date.html">按日期</a>
-      <a href="browse_from_airport.html" aria-current="page">按机场</a>
+      <a href="index.html"><span class="site-nav__index" aria-hidden="true">01</span><span>首页</span></a>
+      <a href="browse_from_date.html"><span class="site-nav__index" aria-hidden="true">02</span><span>按日期</span></a>
+      <a href="browse_from_airport.html" aria-current="page"><span class="site-nav__index" aria-hidden="true">03</span><span>按机场</span></a>
     </nav>
-    <img class="site-logo" src="assets/brand-watermark.png" alt="CuteNew Gallery">
+    <img class="site-logo" src="assets/brand-watermark.png" alt="CuteNew 航空摄影小组" decoding="async" draggable="false">
   </div>
+  <div class="scroll-progress" aria-hidden="true"><span data-scroll-progress></span></div>
 </header>
 
-<main class="airport-browser__main">
-  <div id="container"></div>
+<main id="main-content" class="index-main">
+  <section class="index-hero" data-reveal>
+    <div>
+      <p class="index-hero__kicker">Locations / Airport codes</p>
+      <h1>机场<br>索引</h1>
+    </div>
+    <div class="index-hero__aside">
+      <p>以三字代码穿梭于不同机场的影像集合。可按代码或机场名称即时检索，作品将在新标签页中打开。</p>
+      <div class="index-hero__meta"><span>Global index</span><span id="archiveTotal">Loading</span></div>
+    </div>
+  </section>
+
+  <section class="airport-toolbar" aria-label="机场筛选" data-reveal>
+    <div class="airport-search">
+      <label for="airportSearch">Search airport</label>
+      <input id="airportSearch" type="search" placeholder="输入 PEK、北京或机场名称" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="airport-toolbar__right">
+      <p id="airportCount" class="airport-count" aria-live="polite">正在读取机场数据…</p>
+      <nav id="letterNav" class="letter-nav" aria-label="按首字母跳转"></nav>
+    </div>
+  </section>
+
+  <div id="container" aria-live="polite" aria-busy="true"></div>
 </main>
 
 <script>
-  // 从 CSV 读取并解析
-  async function loadAirportData() {
-    const response = await fetch('./airportdata.csv');
-    const text = await response.text();
-    const lines = text.trim().split('\n').slice(1); // 去掉表头
-    const airports = [];
+  let allAirports = [];
 
-    for (let line of lines) {
-      const [code, description] = line.split(',');
-      if (code) {
-        airports.push({
-          code: code.trim().toUpperCase(),
-          description: (description || '').trim(),
-          url: `photos.html?location=${encodeURIComponent(code.trim().toUpperCase())}`
-        });
+  function parseCSV(text) {
+    const rows = [];
+    let row = [];
+    let field = '';
+    let quoted = false;
+    for (let index = 0; index < text.length; index += 1) {
+      const character = text[index];
+      if (quoted) {
+        if (character === '"' && text[index + 1] === '"') {
+          field += '"';
+          index += 1;
+        } else if (character === '"') {
+          quoted = false;
+        } else {
+          field += character;
+        }
+      } else if (character === '"') {
+        quoted = true;
+      } else if (character === ',') {
+        row.push(field);
+        field = '';
+      } else if (character === '\n') {
+        row.push(field.replace(/\r$/, ''));
+        rows.push(row);
+        row = [];
+        field = '';
+      } else {
+        field += character;
       }
     }
-    return airports;
+    if (field || row.length) {
+      row.push(field.replace(/\r$/, ''));
+      rows.push(row);
+    }
+    return rows;
+  }
+
+  async function loadAirportData() {
+    const response = await fetch('./airportdata.csv');
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return parseCSV(await response.text())
+      .slice(1)
+      .map(([code = '', description = '']) => ({
+        code: code.trim().toUpperCase(),
+        description: description.trim()
+      }))
+      .filter((airport) => /^[A-Z]{3}$/.test(airport.code))
+      .sort((left, right) => left.code.localeCompare(right.code));
   }
 
   function renderAirports(airports) {
-    // 按字母排序
-    airports.sort((a, b) => a.code.localeCompare(b.code));
+    const container = document.getElementById('container');
+    const letterNav = document.getElementById('letterNav');
+    const count = document.getElementById('airportCount');
+    container.replaceChildren();
+    letterNav.replaceChildren();
+    count.textContent = `${airports.length} airports`;
 
-    // 按首字母分组
-    const grouped = {};
-    airports.forEach(ap => {
-      const letter = ap.code[0];
-      if (!grouped[letter]) grouped[letter] = [];
-      grouped[letter].push(ap);
+    if (!airports.length) {
+      const empty = document.createElement('div');
+      empty.className = 'empty-state';
+      empty.innerHTML = '<h2>没有匹配的机场</h2><p>请尝试其他三字代码或名称。</p>';
+      container.appendChild(empty);
+      container.setAttribute('aria-busy', 'false');
+      return;
+    }
+
+    const grouped = new Map();
+    airports.forEach((airport) => {
+      const letter = airport.code[0];
+      if (!grouped.has(letter)) grouped.set(letter, []);
+      grouped.get(letter).push(airport);
     });
+    [...grouped.keys()].sort().forEach((letter) => {
+      const navLink = document.createElement('a');
+      navLink.href = `#letter-${letter}`;
+      navLink.textContent = letter;
+      navLink.setAttribute('aria-label', `跳到 ${letter} 组`);
+      letterNav.appendChild(navLink);
 
-    // 渲染到页面
-    const container = document.getElementById("container");
-    container.innerHTML = ''; // 清空
-    Object.keys(grouped).sort().forEach(letter => {
-      const section = document.createElement("div");
-      section.className = "letter-section";
-      section.innerHTML = `<h2>${letter}</h2>`;
+      const section = document.createElement('section');
+      section.className = 'letter-section';
+      section.id = `letter-${letter}`;
+      section.dataset.reveal = '';
 
-      const grid = document.createElement("div");
-      grid.className = "airport-grid";
+      const heading = document.createElement('h2');
+      heading.append(letter);
+      const sectionCount = document.createElement('span');
+      sectionCount.textContent = `${grouped.get(letter).length} locations`;
+      heading.appendChild(sectionCount);
+      section.appendChild(heading);
 
-      grouped[letter].forEach(ap => {
-        const item = document.createElement("div");
-        item.className = "airport-item";
-
-        const link = document.createElement("a");
-        link.className = "brand-action airport-link";
-        link.href = ap.url;
-        link.target = "_blank";
-        link.rel = "noopener";
-        const label = document.createElement("span");
-        label.className = "action-label";
-        label.textContent = ap.code;
+      const grid = document.createElement('div');
+      grid.className = 'airport-grid';
+      grouped.get(letter).forEach((airport) => {
+        const item = document.createElement('article');
+        item.className = 'airport-item';
+        const link = document.createElement('a');
+        link.className = 'brand-action airport-link';
+        link.href = `photos.html?location=${encodeURIComponent(airport.code)}`;
+        link.target = '_blank';
+        link.rel = 'noopener';
+        link.setAttribute('aria-label', `在新标签页查看 ${airport.code} 的照片`);
+        const label = document.createElement('span');
+        label.className = 'action-label';
+        label.textContent = airport.code;
         link.appendChild(label);
-
         item.appendChild(link);
-
-        if (ap.description) {
-          const desc = document.createElement("div");
-          desc.className = "airport-desc";
-          desc.textContent = ap.description;
-          item.appendChild(desc);
-        }
-
+        const description = document.createElement('div');
+        description.className = 'airport-desc';
+        description.textContent = airport.description || 'Airport archive';
+        item.appendChild(description);
         grid.appendChild(item);
       });
-
       section.appendChild(grid);
       container.appendChild(section);
     });
+    container.setAttribute('aria-busy', 'false');
   }
 
-  // 页面加载时执行
-  loadAirportData().then(renderAirports);
-</script>
+  document.getElementById('airportSearch').addEventListener('input', (event) => {
+    const query = event.target.value.trim().toLocaleLowerCase();
+    renderAirports(allAirports.filter((airport) =>
+      !query || airport.code.toLocaleLowerCase().includes(query) || airport.description.toLocaleLowerCase().includes(query)
+    ));
+  });
 
+  loadAirportData()
+    .then((airports) => {
+      allAirports = airports;
+      document.getElementById('archiveTotal').textContent = `${airports.length} airports`;
+      renderAirports(airports);
+    })
+    .catch((error) => {
+      console.error('机场数据读取失败:', error);
+      document.getElementById('airportCount').textContent = '数据读取失败';
+      document.getElementById('archiveTotal').textContent = 'Unavailable';
+      document.getElementById('container').innerHTML = '<div class="empty-state"><h2>暂时无法载入</h2><p>请稍后重试。</p></div>';
+      document.getElementById('container').setAttribute('aria-busy', 'false');
+    });
+</script>
 </body>
 </html>

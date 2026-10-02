@@ -4,27 +4,47 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="CuteNew Gallery 航空摄影作品">
-  <title>图片展示 · CuteNew Gallery</title>
+  <meta name="theme-color" content="#122445">
+  <title>XMN · 陈骆驼 · CuteNew Gallery</title>
   <link rel="icon" href="../favicon.ico">
+  <link rel="preload" as="image" href="../images/43d72f74-db13-4b42-92c4-e2948320d3d4.jpg" fetchpriority="high">
   <link rel="stylesheet" href="../assets/site.css">
   <script src="../assets/site.js" defer></script>
 </head>
-<body>
-<header class="site-header">
+<body class="detail-page">
+<a class="skip-link" href="#main-content">跳到主要内容</a>
+<header class="site-header" data-site-header>
   <div class="site-header__inner">
-    <a class="site-title" href="../index.html">CuteNew Gallery</a>
+    <a class="site-title" href="../index.html" aria-label="CuteNew Gallery 首页">
+      <span class="site-title__primary">CuteNew</span>
+      <span class="site-title__secondary">Gallery</span>
+    </a>
     <nav class="site-nav" aria-label="主导航">
-      <a href="../index.html">首页</a>
-      <a href="../browse_from_date.html">按日期</a>
-      <a href="../browse_from_airport.html">按机场</a>
+      <a href="../index.html"><span class="site-nav__index" aria-hidden="true">01</span><span>首页</span></a>
+      <a href="../browse_from_date.html"><span class="site-nav__index" aria-hidden="true">02</span><span>按日期</span></a>
+      <a href="../browse_from_airport.html"><span class="site-nav__index" aria-hidden="true">03</span><span>按机场</span></a>
     </nav>
-    <img class="site-logo" src="../assets/brand-watermark.png" alt="CuteNew Gallery">
+    <img class="site-logo" src="../assets/brand-watermark.png" alt="CuteNew 航空摄影小组" decoding="async" draggable="false">
   </div>
+  <div class="scroll-progress" aria-hidden="true"><span data-scroll-progress></span></div>
 </header>
-<main class="detail">
+<main id="main-content" class="detail">
   <article class="detail-card">
-    <img src="../images/43d72f74-db13-4b42-92c4-e2948320d3d4.jpg" alt="2023.7.12 · XMN · 陈骆驼">
-    <p>2023.7.12 · XMN · 陈骆驼</p>
+    <div class="detail-toolbar">
+      <a class="detail-back" href="../index.html">返回图库</a>
+      <span>Frame / 087</span>
+    </div>
+    <div class="detail-stage" data-reveal>
+      <img src="../images/43d72f74-db13-4b42-92c4-e2948320d3d4.jpg" alt="2023.7.12 · XMN · 陈骆驼" loading="eager" decoding="async" fetchpriority="high">
+    </div>
+    <footer class="detail-meta" data-reveal>
+      <h1 class="detail-meta__title">Flight frame / XMN</h1>
+      <dl>
+        <div><dt>Date</dt><dd>2023.7.12</dd></div>
+        <div><dt>Location</dt><dd>XMN</dd></div>
+        <div><dt>Photographer</dt><dd>陈骆驼</dd></div>
+      </dl>
+    </footer>
   </article>
 </main>
 </body>
